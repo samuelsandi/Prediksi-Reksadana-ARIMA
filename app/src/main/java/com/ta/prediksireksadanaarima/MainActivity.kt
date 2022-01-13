@@ -2,54 +2,117 @@ package com.ta.prediksireksadanaarima
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
+
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import okhttp3.*
+import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var lineChart: LineChart
+    private var fundPriceList = ArrayList<MutualFundPriceModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        setBarChart()
+        lineChart = findViewById(R.id.lineChart)
+        initLineChart()
+        setDataToLineChart()
+
+//        ApiData.apiData( object :ApiData.Response{
+//            override fun data(data: ResponseModel.Result, status: Boolean) {
+//                if(status){
+//                    val items:List<ResponseModel.MutualFundPriceModel> = data.data.chart
+//                }
+//            }
+//
+//        })
     }
 
-    private fun setBarChart() {
-        val entries: ArrayList<BarEntry> = ArrayList()
-        entries.add(BarEntry(1f, 4f))
-        entries.add(BarEntry(2f, 10f))
-        entries.add(BarEntry(3f, 2f))
-        entries.add(BarEntry(4f, 15f))
-        entries.add(BarEntry(5f, 13f))
-        entries.add(BarEntry(6f, 2f))
-
-        val barDataSet = BarDataSet(entries, "")
-        barDataSet.setColors(*ColorTemplate.COLORFUL_COLORS)
-
-        val data = BarData(barDataSet)
-        var barChart = findViewById<BarChart>(R.id.barChart)
-        barChart.data = data
+    private fun initLineChart() {
 
         //hide grid lines
-        barChart.axisLeft.setDrawGridLines(false)
-        barChart.xAxis.setDrawGridLines(false)
-        barChart.xAxis.setDrawAxisLine(false)
+        lineChart.axisLeft.setDrawGridLines(false)
+        val xAxis: XAxis = lineChart.xAxis
+        xAxis.setDrawGridLines(false)
+        xAxis.setDrawAxisLine(false)
 
         //remove right y-axis
-        barChart.axisRight.isEnabled = false
+        lineChart.axisRight.isEnabled = false
 
         //remove legend
-        barChart.legend.isEnabled = false
+        lineChart.legend.isEnabled = false
+
 
         //remove description label
-        barChart.description.isEnabled = false
+        lineChart.description.isEnabled = false
+
 
         //add animation
-        barChart.animateY(3000)
+        lineChart.animateX(1000, Easing.EaseInSine)
 
-        //draw chart
-        barChart.invalidate()
+        // to draw label on xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM_INSIDE
+        xAxis.valueFormatter = MyAxisFormatter()
+        xAxis.setDrawLabels(true)
+        xAxis.granularity = 1f
+        xAxis.labelRotationAngle = +90f
+
     }
+
+
+    inner class MyAxisFormatter : IndexAxisValueFormatter() {
+
+        override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+            val index = value.toInt()
+            return if (index < fundPriceList.size) {
+                fundPriceList[index].date
+            } else {
+                ""
+            }
+        }
+    }
+
+    private fun setDataToLineChart() {
+        //now draw bar chart with dynamic data
+        val entries: ArrayList<Entry> = ArrayList()
+
+        fundPriceList = getScoreList()
+
+        //you can replace this data object with  your custom object
+        for (i in fundPriceList.indices) {
+            val fundPrice = fundPriceList[i]
+            entries.add(Entry(i.toFloat(), fundPrice.price))
+        }
+
+        val lineDataSet = LineDataSet(entries, "")
+
+        val data = LineData(lineDataSet)
+        lineChart.data = data
+
+        lineChart.invalidate()
+    }
+
+    // simulate api call
+    // we are initialising it directly
+    private fun getScoreList(): ArrayList<MutualFundPriceModel> {
+        fundPriceList.add(MutualFundPriceModel("2022-01-01", 56000.34f))
+        fundPriceList.add(MutualFundPriceModel("2022-01-02", 60000.56f))
+        fundPriceList.add(MutualFundPriceModel("2022-01-03", 20000.12f))
+        fundPriceList.add(MutualFundPriceModel("2022-01-06", 56000.89f))
+        fundPriceList.add(MutualFundPriceModel("2022-01-07", 100000.25f))
+
+        return fundPriceList
+    }
+
+
 }
