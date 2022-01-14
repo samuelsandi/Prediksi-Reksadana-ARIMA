@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun sendMessage(view: View?) {
-        val intent = Intent(this@MainActivity, Chart::class.java)
+        val intent = Intent(this@MainActivity, MultiLineChartActivity::class.java)
         intent.putExtra("mutualFundName",msg)
         startActivity(intent)
     }

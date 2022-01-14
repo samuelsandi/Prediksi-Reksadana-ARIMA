@@ -10,11 +10,13 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
 class Chart : AppCompatActivity() {
 
     private lateinit var lineChart: LineChart
     private var fundPriceList = ArrayList<MutualFundPriceModel>()
+    private var fundPriceList2 = ArrayList<MutualFundPriceModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,18 +99,29 @@ class Chart : AppCompatActivity() {
     private fun setDataToLineChart() {
         //now draw bar chart with dynamic data
         val entries: ArrayList<Entry> = ArrayList()
+        val entries2: ArrayList<Entry> = ArrayList()
 
         fundPriceList = getPriceList()
+        fundPriceList2 = getPriceList2()
 
         //you can replace this data object with  your custom object
         for (i in fundPriceList.indices) {
             val fundPrice = fundPriceList[i]
             entries.add(Entry(i.toFloat(), fundPrice.price))
         }
+        val lineDataSet = LineDataSet(entries, "Dataset1")
 
-        val lineDataSet = LineDataSet(entries, "")
+        for (i in fundPriceList2.indices) {
+            val fundPrice = fundPriceList2[i]
+            entries2.add(Entry(i.toFloat(), fundPrice.price))
+        }
+        val lineDataSet2 = LineDataSet(entries2, "Dataset2")
 
-        val data = LineData(lineDataSet)
+        val dataSets: ArrayList<ILineDataSet> = ArrayList()
+        dataSets.add(lineDataSet)
+        dataSets.add(lineDataSet2)
+
+        val data = LineData(dataSets)
         lineChart.data = data
 
         lineChart.invalidate()
@@ -122,6 +135,16 @@ class Chart : AppCompatActivity() {
         fundPriceList.add(MutualFundPriceModel("2022-01-03", 20000.12f))
         fundPriceList.add(MutualFundPriceModel("2022-01-06", 56000.89f))
         fundPriceList.add(MutualFundPriceModel("2022-01-07", 100000.25f))
+
+        return fundPriceList
+    }
+
+    private fun getPriceList2(): ArrayList<MutualFundPriceModel> {
+        fundPriceList.add(MutualFundPriceModel("2022-01-01", 70000.34f))
+        fundPriceList.add(MutualFundPriceModel("2022-01-02", 40000.56f))
+        fundPriceList.add(MutualFundPriceModel("2022-01-03", 30000.12f))
+        fundPriceList.add(MutualFundPriceModel("2022-01-06", 10000.89f))
+        fundPriceList.add(MutualFundPriceModel("2022-01-07", 90000.25f))
 
         return fundPriceList
     }
