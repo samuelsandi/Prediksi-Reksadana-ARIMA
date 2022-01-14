@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Prediksi Reksadana ARIMA</string>
+    <string name="button_name">Lihat Grafik</string>
 </resources>

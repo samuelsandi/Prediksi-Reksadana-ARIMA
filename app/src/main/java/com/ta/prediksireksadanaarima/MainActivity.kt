@@ -1,118 +1,27 @@
 package com.ta.prediksireksadanaarima
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 
-import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.utils.ColorTemplate
-import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.AxisBase
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import okhttp3.*
-import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var lineChart: LineChart
-    private var fundPriceList = ArrayList<MutualFundPriceModel>()
+    companion object MutualFundName{
+        val msg = "RD13"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        lineChart = findViewById(R.id.lineChart)
-        initLineChart()
-        setDataToLineChart()
-
-//        ApiData.apiData( object :ApiData.Response{
-//            override fun data(data: ResponseModel.Result, status: Boolean) {
-//                if(status){
-//                    val items:List<ResponseModel.MutualFundPriceModel> = data.data.chart
-//                }
-//            }
-//
-//        })
     }
 
-    private fun initLineChart() {
-
-        //hide grid lines
-        lineChart.axisLeft.setDrawGridLines(false)
-        val xAxis: XAxis = lineChart.xAxis
-        xAxis.setDrawGridLines(false)
-        xAxis.setDrawAxisLine(false)
-
-        //remove right y-axis
-        lineChart.axisRight.isEnabled = false
-
-        //remove legend
-        lineChart.legend.isEnabled = false
-
-
-        //remove description label
-        lineChart.description.isEnabled = false
-
-
-        //add animation
-        lineChart.animateX(1000, Easing.EaseInSine)
-
-        // to draw label on xAxis
-        xAxis.position = XAxis.XAxisPosition.BOTTOM_INSIDE
-        xAxis.valueFormatter = MyAxisFormatter()
-        xAxis.setDrawLabels(true)
-        xAxis.granularity = 1f
-        xAxis.labelRotationAngle = +90f
-
+    fun sendMessage(view: View?) {
+        val intent = Intent(this@MainActivity, Chart::class.java)
+        intent.putExtra("mutualFundName",msg)
+        startActivity(intent)
     }
-
-
-    inner class MyAxisFormatter : IndexAxisValueFormatter() {
-
-        override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-            val index = value.toInt()
-            return if (index < fundPriceList.size) {
-                fundPriceList[index].date
-            } else {
-                ""
-            }
-        }
-    }
-
-    private fun setDataToLineChart() {
-        //now draw bar chart with dynamic data
-        val entries: ArrayList<Entry> = ArrayList()
-
-        fundPriceList = getScoreList()
-
-        //you can replace this data object with  your custom object
-        for (i in fundPriceList.indices) {
-            val fundPrice = fundPriceList[i]
-            entries.add(Entry(i.toFloat(), fundPrice.price))
-        }
-
-        val lineDataSet = LineDataSet(entries, "")
-
-        val data = LineData(lineDataSet)
-        lineChart.data = data
-
-        lineChart.invalidate()
-    }
-
-    // simulate api call
-    // we are initialising it directly
-    private fun getScoreList(): ArrayList<MutualFundPriceModel> {
-        fundPriceList.add(MutualFundPriceModel("2022-01-01", 56000.34f))
-        fundPriceList.add(MutualFundPriceModel("2022-01-02", 60000.56f))
-        fundPriceList.add(MutualFundPriceModel("2022-01-03", 20000.12f))
-        fundPriceList.add(MutualFundPriceModel("2022-01-06", 56000.89f))
-        fundPriceList.add(MutualFundPriceModel("2022-01-07", 100000.25f))
-
-        return fundPriceList
-    }
-
 
 }
