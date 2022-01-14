@@ -1,216 +1,181 @@
-package com.ta.prediksireksadanaarima;
+package com.ta.prediksireksadanaarima
 
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.WindowManager;
-import android.widget.TextView;
+import com.github.mikephil.charting.listener.OnChartGestureListener
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.github.mikephil.charting.charts.LineChart
+import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.WindowManager
+import com.github.mikephil.charting.components.Legend
+import android.widget.TextView
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.utils.ColorTemplate
+import android.view.MotionEvent
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture
+import java.util.ArrayList
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.listener.ChartTouchListener;
-import com.github.mikephil.charting.listener.OnChartGestureListener;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
-import com.ta.prediksireksadanaarima.DemoBase;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class MultiLineChartActivity extends DemoBase implements OnChartGestureListener,
-        OnChartValueSelectedListener {
-
-    private LineChart chart;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_multi_line_chart);
-
-        setTitle("MultiLineChartActivity");
-
-        chart = findViewById(R.id.chart1);
-        chart.setOnChartValueSelectedListener(this);
-
-        chart.setDrawGridBackground(false);
-        chart.getDescription().setEnabled(false);
-        chart.setDrawBorders(false);
-
-        chart.getAxisLeft().setEnabled(false);
-        chart.getAxisRight().setDrawAxisLine(false);
-        chart.getAxisRight().setDrawGridLines(false);
-        chart.getXAxis().setDrawAxisLine(false);
-        chart.getXAxis().setDrawGridLines(false);
+class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueSelectedListener {
+    private lateinit var chart: LineChart
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        @Suppress("DEPRECATION")
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
+        setContentView(R.layout.activity_multi_line_chart)
+        title = "MultiLineChartActivity"
+        chart = findViewById(R.id.chart1)
+        chart.setOnChartValueSelectedListener(this)
+        chart.setDrawGridBackground(false)
+        chart.description.isEnabled = false
+        chart.setDrawBorders(false)
+        chart.axisLeft.isEnabled = false
+        chart.axisRight.setDrawAxisLine(false)
+        chart.axisRight.setDrawGridLines(false)
+        chart.xAxis.setDrawAxisLine(false)
+        chart.xAxis.setDrawGridLines(false)
 
         // enable touch gestures
-        chart.setTouchEnabled(true);
+        chart.setTouchEnabled(true)
 
         // enable scaling and dragging
-        chart.setDragEnabled(true);
-        chart.setScaleEnabled(true);
+        chart.isDragEnabled = true
+        chart.setScaleEnabled(true)
 
         // if disabled, scaling can be done on x- and y-axis separately
-        chart.setPinchZoom(false);
-
-        Legend l = chart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setDrawInside(false);
-
-        TextView tvX = findViewById(R.id.tvXMax);
-        TextView tvY = findViewById(R.id.tvYMax);
-        tvX.setText("TBD");
-        tvY.setText("TBD");
+        chart.setPinchZoom(false)
+        val l = chart.legend
+        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+        l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+        l.orientation = Legend.LegendOrientation.VERTICAL
+        l.setDrawInside(false)
+        val tvX = findViewById<TextView>(R.id.tvXMax)
+        val tvY = findViewById<TextView>(R.id.tvYMax)
+        tvX.text = "TBD"
+        tvY.text = "TBD"
 
         // Chart initialization
-
-        chart.resetTracking();
-
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-
-        for (int z = 0; z < 3; z++) {
-
-            ArrayList<Entry> values = new ArrayList<>();
-
-            for (int i = 0; i < 100; i++) {
-                double val = (Math.random() * 100) + 3;
-                values.add(new Entry(i, (float) val));
+        chart.resetTracking()
+        val dataSets = ArrayList<ILineDataSet>()
+        for (z in 0..2) {
+            val values = ArrayList<Entry>()
+            for (i in 0..99) {
+                val `val` = Math.random() * 100 + 3
+                values.add(Entry(i.toFloat(), `val`.toFloat()))
             }
-
-            LineDataSet d = new LineDataSet(values, "DataSet " + (z + 1));
-            d.setLineWidth(2.5f);
-            d.setCircleRadius(4f);
-
-            int color = colors[z % colors.length];
-            d.setColor(color);
-            d.setCircleColor(color);
-            dataSets.add(d);
+            val d = LineDataSet(values, "DataSet " + (z + 1))
+            d.lineWidth = 2.5f
+            d.circleRadius = 4f
+            val color = colors[z % colors.size]
+            d.color = color
+            d.setCircleColor(color)
+            dataSets.add(d)
         }
-
-        LineData data = new LineData(dataSets);
-        chart.setData(data);
-        chart.invalidate();
+        val data = LineData(dataSets)
+        chart.data = data
+        chart.invalidate()
     }
 
-    private final int[] colors = new int[] {
-            ColorTemplate.VORDIPLOM_COLORS[0],
-            ColorTemplate.VORDIPLOM_COLORS[1],
-            ColorTemplate.VORDIPLOM_COLORS[2]
-    };
+    private val colors = intArrayOf(
+        ColorTemplate.VORDIPLOM_COLORS[0],
+        ColorTemplate.VORDIPLOM_COLORS[1],
+        ColorTemplate.VORDIPLOM_COLORS[2]
+    )
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.line, menu);
-        menu.removeItem(R.id.actionToggleIcons);
-        return true;
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.line, menu)
+        menu.removeItem(R.id.actionToggleIcons)
+        return true
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.actionToggleValues: {
-                List<ILineDataSet> sets = chart.getData()
-                        .getDataSets();
-
-                for (ILineDataSet iSet : sets) {
-
-                    LineDataSet set = (LineDataSet) iSet;
-                    set.setDrawValues(!set.isDrawValuesEnabled());
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.actionToggleValues -> {
+                val sets = chart.data
+                    .dataSets
+                for (iSet in sets) {
+                    val set = iSet as LineDataSet
+                    set.setDrawValues(!set.isDrawValuesEnabled)
                 }
-
-                chart.invalidate();
-                break;
+                chart.invalidate()
             }
-            case R.id.actionToggleAutoScaleMinMax: {
-                chart.setAutoScaleMinMaxEnabled(!chart.isAutoScaleMinMaxEnabled());
-                chart.notifyDataSetChanged();
-                break;
+            R.id.actionToggleAutoScaleMinMax -> {
+                chart.isAutoScaleMinMaxEnabled = !chart.isAutoScaleMinMaxEnabled
+                chart.notifyDataSetChanged()
             }
-            case R.id.actionToggleHighlight: {
-                if(chart.getData() != null) {
-                    chart.getData().setHighlightEnabled(!chart.getData().isHighlightEnabled());
-                    chart.invalidate();
+            R.id.actionToggleHighlight -> {
+                if (chart.data != null) {
+                    chart.data.isHighlightEnabled = !chart.data.isHighlightEnabled
+                    chart.invalidate()
                 }
-                break;
             }
-            case R.id.actionToggleCircles: {
-                List<ILineDataSet> sets = chart.getData()
-                        .getDataSets();
-
-                for (ILineDataSet iSet : sets) {
-
-                    LineDataSet set = (LineDataSet) iSet;
-                    set.setDrawCircles(!set.isDrawCirclesEnabled());
+            R.id.actionToggleCircles -> {
+                val sets = chart.data
+                    .dataSets
+                for (iSet in sets) {
+                    val set = iSet as LineDataSet
+                    set.setDrawCircles(!set.isDrawCirclesEnabled)
                 }
-                chart.invalidate();
-                break;
+                chart.invalidate()
             }
         }
-        return true;
+        return true
     }
 
-    @Override
-    public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-        Log.i("Gesture", "START, x: " + me.getX() + ", y: " + me.getY());
+    override fun onChartGestureStart(me: MotionEvent, lastPerformedGesture: ChartGesture) {
+        Log.i("Gesture", "START, x: " + me.x + ", y: " + me.y)
     }
 
-    @Override
-    public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-        Log.i("Gesture", "END, lastGesture: " + lastPerformedGesture);
+    override fun onChartGestureEnd(me: MotionEvent, lastPerformedGesture: ChartGesture) {
+        Log.i("Gesture", "END, lastGesture: $lastPerformedGesture")
 
         // un-highlight values after the gesture is finished and no single-tap
-        if(lastPerformedGesture != ChartTouchListener.ChartGesture.SINGLE_TAP)
-            chart.highlightValues(null); // or highlightTouch(null) for callback to onNothingSelected(...)
+        if (lastPerformedGesture != ChartGesture.SINGLE_TAP) chart.highlightValues(null) // or highlightTouch(null) for callback to onNothingSelected(...)
     }
 
-    @Override
-    public void onChartLongPressed(MotionEvent me) {
-        Log.i("LongPress", "Chart long pressed.");
+    override fun onChartLongPressed(me: MotionEvent) {
+        Log.i("LongPress", "Chart long pressed.")
     }
 
-    @Override
-    public void onChartDoubleTapped(MotionEvent me) {
-        Log.i("DoubleTap", "Chart double-tapped.");
+    override fun onChartDoubleTapped(me: MotionEvent) {
+        Log.i("DoubleTap", "Chart double-tapped.")
     }
 
-    @Override
-    public void onChartSingleTapped(MotionEvent me) {
-        Log.i("SingleTap", "Chart single-tapped.");
+    override fun onChartSingleTapped(me: MotionEvent) {
+        Log.i("SingleTap", "Chart single-tapped.")
     }
 
-    @Override
-    public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
-        Log.i("Fling", "Chart fling. VelocityX: " + velocityX + ", VelocityY: " + velocityY);
+    override fun onChartFling(
+        me1: MotionEvent,
+        me2: MotionEvent,
+        velocityX: Float,
+        velocityY: Float
+    ) {
+        Log.i("Fling", "Chart fling. VelocityX: $velocityX, VelocityY: $velocityY")
     }
 
-    @Override
-    public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
-        Log.i("Scale / Zoom", "ScaleX: " + scaleX + ", ScaleY: " + scaleY);
+    override fun onChartScale(me: MotionEvent, scaleX: Float, scaleY: Float) {
+        Log.i("Scale / Zoom", "ScaleX: $scaleX, ScaleY: $scaleY")
     }
 
-    @Override
-    public void onChartTranslate(MotionEvent me, float dX, float dY) {
-        Log.i("Translate / Move", "dX: " + dX + ", dY: " + dY);
+    override fun onChartTranslate(me: MotionEvent, dX: Float, dY: Float) {
+        Log.i("Translate / Move", "dX: $dX, dY: $dY")
     }
 
-    @Override
-    public void onValueSelected(Entry e, Highlight h) {
-        Log.i("VAL SELECTED",
-                "Value: " + e.getY() + ", xIndex: " + e.getX()
-                        + ", DataSet index: " + h.getDataSetIndex());
+    override fun onValueSelected(e: Entry, h: Highlight) {
+        Log.i(
+            "VAL SELECTED",
+            "Value: " + e.y + ", xIndex: " + e.x
+                    + ", DataSet index: " + h.dataSetIndex
+        )
     }
 
-    @Override
-    public void onNothingSelected() {}
+    override fun onNothingSelected() {}
 }
