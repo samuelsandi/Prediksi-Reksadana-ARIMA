@@ -28,7 +28,6 @@ public class MultiLineChartActivity extends DemoBase implements OnChartGestureLi
         OnChartValueSelectedListener {
 
     private LineChart chart;
-    private TextView tvX, tvY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +67,12 @@ public class MultiLineChartActivity extends DemoBase implements OnChartGestureLi
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
         l.setDrawInside(false);
 
-        // Moved from seekBar
+        TextView tvX = findViewById(R.id.tvXMax);
+        TextView tvY = findViewById(R.id.tvYMax);
+        tvX.setText("TBD");
+        tvY.setText("TBD");
+
+        // Chart initialization
 
         chart.resetTracking();
 
@@ -147,10 +151,7 @@ public class MultiLineChartActivity extends DemoBase implements OnChartGestureLi
                 for (ILineDataSet iSet : sets) {
 
                     LineDataSet set = (LineDataSet) iSet;
-                    if (set.isDrawCirclesEnabled())
-                        set.setDrawCircles(false);
-                    else
-                        set.setDrawCircles(true);
+                    set.setDrawCircles(!set.isDrawCirclesEnabled());
                 }
                 chart.invalidate();
                 break;
