@@ -20,7 +20,7 @@ import com.github.mikephil.charting.charts.Chart;
  *
  * @author Philipp Jahoda
  */
-public abstract class DemoBase extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+public  class DemoBase extends AppCompatActivity {
 
     protected final String[] months = new String[] {
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"
@@ -56,19 +56,6 @@ public abstract class DemoBase extends AppCompatActivity implements ActivityComp
         overridePendingTransition(R.anim.move_left_in_activity, R.anim.move_right_out_activity);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_STORAGE) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                saveToGallery();
-            } else {
-                Toast.makeText(getApplicationContext(), "Saving FAILED!", Toast.LENGTH_SHORT)
-                        .show();
-            }
-        }
-    }
-
     protected void requestStoragePermission(View view) {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             Snackbar.make(view, "Write permission is required to save image to gallery", Snackbar.LENGTH_INDEFINITE)
@@ -84,15 +71,4 @@ public abstract class DemoBase extends AppCompatActivity implements ActivityComp
             ActivityCompat.requestPermissions(DemoBase.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_STORAGE);
         }
     }
-
-    protected void saveToGallery(Chart chart, String name) {
-        if (chart.saveToGallery(name + "_" + System.currentTimeMillis(), 70))
-            Toast.makeText(getApplicationContext(), "Saving SUCCESSFUL!",
-                    Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(getApplicationContext(), "Saving FAILED!", Toast.LENGTH_SHORT)
-                    .show();
-    }
-
-    protected abstract void saveToGallery();
 }
