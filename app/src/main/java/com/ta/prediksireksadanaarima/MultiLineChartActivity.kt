@@ -30,6 +30,10 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
         setContentView(R.layout.activity_multi_line_chart)
+
+        val intent = intent
+        val mutualFundName = intent.getStringExtra("mutualFundName")
+
         title = "MultiLineChartActivity"
         chart = findViewById(R.id.chart1)
         chart.setOnChartValueSelectedListener(this)
@@ -81,6 +85,14 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
         val data = LineData(dataSets)
         chart.data = data
         chart.invalidate()
+
+        //actionbar
+        val actionbar = supportActionBar
+        //set actionbar title
+        actionbar!!.title = mutualFundName
+        //set back button
+        actionbar.setDisplayHomeAsUpEnabled(true)
+        actionbar.setDisplayHomeAsUpEnabled(true)
     }
 
     private val colors = intArrayOf(
