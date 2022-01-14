@@ -19,6 +19,11 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture
 import java.util.ArrayList
+import androidx.core.app.ActivityCompat.startActivityForResult
+
+import android.content.Intent
+import androidx.activity.OnBackPressedCallback
+
 
 class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueSelectedListener {
     private lateinit var chart: LineChart
@@ -34,7 +39,13 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
         val intent = intent
         val mutualFundName = intent.getStringExtra("mutualFundName")
 
-        title = "MultiLineChartActivity"
+        //actionbar
+        val actionbar = supportActionBar
+        //set actionbar title
+        actionbar!!.title = mutualFundName
+        //set back button
+        actionbar.setDisplayHomeAsUpEnabled(true)
+
         chart = findViewById(R.id.chart1)
         chart.setOnChartValueSelectedListener(this)
         chart.setDrawGridBackground(false)
@@ -85,14 +96,6 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
         val data = LineData(dataSets)
         chart.data = data
         chart.invalidate()
-
-        //actionbar
-        val actionbar = supportActionBar
-        //set actionbar title
-        actionbar!!.title = mutualFundName
-        //set back button
-        actionbar.setDisplayHomeAsUpEnabled(true)
-        actionbar.setDisplayHomeAsUpEnabled(true)
     }
 
     private val colors = intArrayOf(
@@ -109,6 +112,9 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
             R.id.actionToggleValues -> {
                 val sets = chart.data
                     .dataSets

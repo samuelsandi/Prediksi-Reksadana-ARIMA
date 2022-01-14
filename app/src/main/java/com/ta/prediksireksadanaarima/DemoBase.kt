@@ -15,9 +15,4 @@ open class DemoBase : AppCompatActivity() {
         tfRegular = Typeface.createFromAsset(assets, "OpenSans-Regular.ttf")
         tfLight = Typeface.createFromAsset(assets, "OpenSans-Light.ttf")
     }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        overridePendingTransition(R.anim.move_left_in_activity, R.anim.move_right_out_activity)
-    }
 }
