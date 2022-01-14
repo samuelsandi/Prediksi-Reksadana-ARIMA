@@ -6,8 +6,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.WindowManager;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -26,11 +24,10 @@ import com.ta.prediksireksadanaarima.DemoBase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiLineChartActivity extends DemoBase implements OnSeekBarChangeListener,
-        OnChartGestureListener, OnChartValueSelectedListener {
+public class MultiLineChartActivity extends DemoBase implements OnChartGestureListener,
+        OnChartValueSelectedListener {
 
     private LineChart chart;
-    private SeekBar seekBarX, seekBarY;
     private TextView tvX, tvY;
 
     @Override
@@ -41,15 +38,6 @@ public class MultiLineChartActivity extends DemoBase implements OnSeekBarChangeL
         setContentView(R.layout.activity_multi_line_chart);
 
         setTitle("MultiLineChartActivity");
-
-        tvX = findViewById(R.id.tvXMax);
-        tvY = findViewById(R.id.tvYMax);
-
-        seekBarX = findViewById(R.id.seekBar1);
-        seekBarX.setOnSeekBarChangeListener(this);
-
-        seekBarY = findViewById(R.id.seekBar2);
-        seekBarY.setOnSeekBarChangeListener(this);
 
         chart = findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
@@ -74,31 +62,15 @@ public class MultiLineChartActivity extends DemoBase implements OnSeekBarChangeL
         // if disabled, scaling can be done on x- and y-axis separately
         chart.setPinchZoom(false);
 
-        seekBarX.setProgress(20);
-        seekBarY.setProgress(100);
-
         Legend l = chart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
         l.setDrawInside(false);
-    }
 
-    private final int[] colors = new int[] {
-            ColorTemplate.VORDIPLOM_COLORS[0],
-            ColorTemplate.VORDIPLOM_COLORS[1],
-            ColorTemplate.VORDIPLOM_COLORS[2]
-    };
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        // Moved from seekBar
 
         chart.resetTracking();
-
-        progress = seekBarX.getProgress();
-
-        tvX.setText(String.valueOf(seekBarX.getProgress()));
-        tvY.setText(String.valueOf(seekBarY.getProgress()));
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
 
@@ -106,8 +78,8 @@ public class MultiLineChartActivity extends DemoBase implements OnSeekBarChangeL
 
             ArrayList<Entry> values = new ArrayList<>();
 
-            for (int i = 0; i < progress; i++) {
-                double val = (Math.random() * seekBarY.getProgress()) + 3;
+            for (int i = 0; i < 100; i++) {
+                double val = (Math.random() * 100) + 3;
                 values.add(new Entry(i, (float) val));
             }
 
@@ -125,6 +97,12 @@ public class MultiLineChartActivity extends DemoBase implements OnSeekBarChangeL
         chart.setData(data);
         chart.invalidate();
     }
+
+    private final int[] colors = new int[] {
+            ColorTemplate.VORDIPLOM_COLORS[0],
+            ColorTemplate.VORDIPLOM_COLORS[1],
+            ColorTemplate.VORDIPLOM_COLORS[2]
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -234,10 +212,4 @@ public class MultiLineChartActivity extends DemoBase implements OnSeekBarChangeL
 
     @Override
     public void onNothingSelected() {}
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {}
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {}
 }
