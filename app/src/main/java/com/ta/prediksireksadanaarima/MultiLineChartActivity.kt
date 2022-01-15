@@ -19,14 +19,13 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture
 import java.util.ArrayList
-import androidx.core.app.ActivityCompat.startActivityForResult
-
-import android.content.Intent
-import androidx.activity.OnBackPressedCallback
-
 
 class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueSelectedListener {
     private lateinit var chart: LineChart
+    private var fundPriceLists = ArrayList<ArrayList<MutualFundPriceModel>>()
+    private lateinit var tvX: TextView
+    private lateinit var tvY: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         @Suppress("DEPRECATION")
@@ -35,6 +34,9 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
         setContentView(R.layout.activity_multi_line_chart)
+
+        tvX = findViewById(R.id.tvXMax)
+        tvY = findViewById(R.id.tvYMax)
 
         val intent = intent
         val mutualFundName = intent.getStringExtra("mutualFundName")
@@ -47,6 +49,10 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
         actionbar.setDisplayHomeAsUpEnabled(true)
 
         chart = findViewById(R.id.chart1)
+        getPriceList()
+//        initChart()
+//        setChartData()
+
         chart.setOnChartValueSelectedListener(this)
         chart.setDrawGridBackground(false)
         chart.description.isEnabled = false
@@ -71,21 +77,24 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
         l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
         l.orientation = Legend.LegendOrientation.VERTICAL
         l.setDrawInside(false)
-        val tvX = findViewById<TextView>(R.id.tvXMax)
-        val tvY = findViewById<TextView>(R.id.tvYMax)
         tvX.text = "TBD"
         tvY.text = "TBD"
 
-        // Chart initialization
+
+        //SetChartData
         chart.resetTracking()
         val dataSets = ArrayList<ILineDataSet>()
-        for (z in 0..2) {
-            val values = ArrayList<Entry>()
-            for (i in 0..99) {
-                val `val` = Math.random() * 100 + 3
-                values.add(Entry(i.toFloat(), `val`.toFloat()))
+        for (z in fundPriceLists.indices) {
+            val entries = ArrayList<Entry>()
+//            for (i in 0..99) {
+//                val `val` = Math.random() * 100 + 3
+//                values.add(Entry(i.toFloat(), `val`.toFloat()))
+//            }
+            for (i in fundPriceLists[z].indices) {
+                val fundPrice = fundPriceLists[z][i]
+                entries.add(Entry(i.toFloat(), fundPrice.price))
             }
-            val d = LineDataSet(values, "DataSet " + (z + 1))
+            val d = LineDataSet(entries, "DataSet " + (z + 1))
             d.lineWidth = 2.5f
             d.circleRadius = 4f
             val color = colors[z % colors.size]
@@ -100,9 +109,61 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
 
     private val colors = intArrayOf(
         ColorTemplate.VORDIPLOM_COLORS[0],
-        ColorTemplate.VORDIPLOM_COLORS[1],
-        ColorTemplate.VORDIPLOM_COLORS[2]
+        ColorTemplate.VORDIPLOM_COLORS[1]
     )
+
+//    private fun initLineChart() {
+//
+//        //hide grid lines
+//        lineChart.axisLeft.setDrawGridLines(false)
+//        val xAxis: XAxis = lineChart.xAxis
+//        xAxis.setDrawGridLines(false)
+//        xAxis.setDrawAxisLine(false)
+//
+//        //remove right y-axis
+//        lineChart.axisRight.isEnabled = false
+//
+//        //remove legend
+//        lineChart.legend.isEnabled = false
+//
+//
+//        //remove description label
+//        lineChart.description.isEnabled = false
+//
+//
+//        //add animation
+//        lineChart.animateX(1000, Easing.EaseInSine)
+//
+//        // to draw label on xAxis
+//        xAxis.position = XAxis.XAxisPosition.BOTTOM_INSIDE
+//        xAxis.valueFormatter = MyAxisFormatter()
+//        xAxis.setDrawLabels(true)
+//        xAxis.granularity = 1f
+//        xAxis.labelRotationAngle = +90f
+//
+//    }
+//
+//
+//    inner class MyAxisFormatter : IndexAxisValueFormatter() {
+//
+//        override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+//            val index = value.toInt()
+//            return if (index < fundPriceList.size) {
+//                fundPriceList[index].date
+//            } else {
+//                ""
+//            }
+//        }
+//    }
+
+    private fun initChart(){
+
+
+    }
+
+    private fun setChartData(){
+
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.line, menu)
@@ -196,4 +257,26 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
     }
 
     override fun onNothingSelected() {}
+
+    // simulate api call
+    // we are initialising it directly
+    private fun getPriceList() {
+        var fPriceTemp = ArrayList<MutualFundPriceModel>()
+        var fPriceTemp2 = ArrayList<MutualFundPriceModel>()
+
+        fPriceTemp.add(MutualFundPriceModel("2022-01-01", 56000.34f))
+        fPriceTemp.add(MutualFundPriceModel("2022-01-02", 60000.56f))
+        fPriceTemp.add(MutualFundPriceModel("2022-01-03", 20000.12f))
+        fPriceTemp.add(MutualFundPriceModel("2022-01-06", 56000.89f))
+        fPriceTemp.add(MutualFundPriceModel("2022-01-07", 100000f))
+
+        fPriceTemp2.add(MutualFundPriceModel("2022-01-01", 70000.34f))
+        fPriceTemp2.add(MutualFundPriceModel("2022-01-02", 40000.5f))
+        fPriceTemp2.add(MutualFundPriceModel("2022-01-03", 30000f))
+        fPriceTemp2.add(MutualFundPriceModel("2022-01-06", 10000f))
+        fPriceTemp2.add(MutualFundPriceModel("2022-01-07", 90000f))
+
+        fundPriceLists.add(fPriceTemp)
+        fundPriceLists.add(fPriceTemp2)
+    }
 }

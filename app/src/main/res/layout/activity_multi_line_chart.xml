@@ -20,8 +20,7 @@
         android:layout_marginBottom="15dp"
         android:layout_marginEnd="10dp"
         android:gravity="right"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        tools:ignore="RtlHardcoded" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/tvYMax"
@@ -33,7 +32,6 @@
         android:layout_marginBottom="15dp"
         android:layout_marginEnd="10dp"
         android:gravity="right"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        tools:ignore="RtlHardcoded" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
