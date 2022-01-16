@@ -32,7 +32,8 @@ import java.util.ArrayList
 
 class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueSelectedListener {
     private lateinit var chart: LineChart
-    private lateinit var fundPriceLists: MutualFundPriceResponse
+    private var fundPriceList = ArrayList<MutualFundPriceModel>()
+    private var predPriceList = ArrayList<MutualFundPriceModel>()
     private lateinit var tvX: TextView
     private lateinit var tvY: TextView
 
@@ -61,20 +62,15 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
         chart = findViewById(R.id.chart1)
         getPriceList()
         initChart()
-        setChartData()
     }
-
-    private val colors = intArrayOf(
-        ColorTemplate.VORDIPLOM_COLORS[0],
-        ColorTemplate.VORDIPLOM_COLORS[1]
-    )
 
     inner class MyAxisFormatter : IndexAxisValueFormatter() {
 
         override fun getAxisLabel(value: Float, axis: AxisBase?): String {
             val index = value.toInt()
-            return if (index < fundPriceLists.pric.size) {
-                fundPriceLists.pric[index].date
+            val fundPriceLists: List<MutualFundPriceModel> = fundPriceList + predPriceList
+            return if (index < fundPriceLists.size) {
+                fundPriceLists[index].date
             } else {
                 ""
             }
@@ -123,30 +119,28 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
 
         // Prices
         val entries = ArrayList<Entry>()
-        for (i in fundPriceLists.pric.indices){
-            val fundPrice = fundPriceLists.pric[i]
+        for (i in fundPriceList.indices){
+            val fundPrice = fundPriceList[i]
             entries.add(Entry(i.toFloat(), fundPrice.price))
         }
         var d = LineDataSet(entries, "NAV")
         d.lineWidth = 2.5f
         d.circleRadius = 4f
-        var color = colors[0 % colors.size]
-        d.color = color
-        d.setCircleColor(color)
+        d.color = ColorTemplate.VORDIPLOM_COLORS[3]
+        d.setCircleColor(d.color)
         dataSets.add(d)
 
         // Prediction Prices
-        entries.clear()
-        for (i in fundPriceLists.pred.indices){
-            val fundPrice = fundPriceLists.pred[i]
-            entries.add(Entry(i.toFloat(), fundPrice.price))
+        val entries2 = ArrayList<Entry>()
+        for (i in predPriceList.indices){
+            val fundPrice = predPriceList[i]
+            entries2.add(Entry(i.toFloat() + entries.size, fundPrice.price))
         }
-        d = LineDataSet(entries, "ARIMA Prediction")
+        d = LineDataSet(entries2, "ARIMA Prediction")
         d.lineWidth = 2.5f
         d.circleRadius = 4f
-        color = colors[1 % colors.size]
-        d.color = color
-        d.setCircleColor(color)
+        d.color = ColorTemplate.VORDIPLOM_COLORS[0]
+        d.setCircleColor(d.color)
         dataSets.add(d)
 
         val data = LineData(dataSets)
@@ -277,8 +271,13 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
              * on a production app. This method is run on the main thread */
             override fun onResponse(call: Call<MutualFundPriceResponse>, response: Response<MutualFundPriceResponse>) {
                 /* This will print the response of the network call to the Logcat */
-                val a = moshi.adapter(MutualFundPriceResponse::class.java).to(response.body())
-                fundPriceLists = response.body()!!
+                for (i in response.body()!!.pric.indices){
+                    fundPriceList.add(response.body()!!.pric[i])
+                }
+                for (i in response.body()!!.pred.indices){
+                    predPriceList.add(response.body()!!.pred[i])
+                }
+                setChartData()
             }
         })
     }
