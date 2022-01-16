@@ -123,23 +123,28 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
             val fundPrice = fundPriceList[i]
             entries.add(Entry(i.toFloat(), fundPrice.price))
         }
-        var d = LineDataSet(entries, "NAV")
-        d.lineWidth = 2.5f
-        d.circleRadius = 4f
-        d.color = ColorTemplate.VORDIPLOM_COLORS[3]
-        d.setCircleColor(d.color)
-        dataSets.add(d)
 
-        // Prediction Prices
+        // Prediction prices
         val entries2 = ArrayList<Entry>()
+        entries2.add(Entry((fundPriceList.size-1).toFloat(), fundPriceList[fundPriceList.size-1].price))
         for (i in predPriceList.indices){
             val fundPrice = predPriceList[i]
             entries2.add(Entry(i.toFloat() + entries.size, fundPrice.price))
         }
-        d = LineDataSet(entries2, "ARIMA Prediction")
+
+        // Prediction chart styling
+        var d = LineDataSet(entries2, "ARIMA Prediction")
         d.lineWidth = 2.5f
         d.circleRadius = 4f
         d.color = ColorTemplate.VORDIPLOM_COLORS[0]
+        d.setCircleColor(d.color)
+        dataSets.add(d)
+
+        // Price chart styling
+        d = LineDataSet(entries, "NAV")
+        d.lineWidth = 2.5f
+        d.circleRadius = 4f
+        d.color = ColorTemplate.VORDIPLOM_COLORS[3]
         d.setCircleColor(d.color)
         dataSets.add(d)
 
