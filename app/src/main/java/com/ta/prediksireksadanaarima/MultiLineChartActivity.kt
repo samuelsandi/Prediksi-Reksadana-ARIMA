@@ -21,6 +21,13 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.ArrayList
 
 class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueSelectedListener {
@@ -246,5 +253,38 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
 
         fundPriceLists.add(fPriceTemp)
         fundPriceLists.add(fPriceTemp2)
+
+        //API and JSON Handler
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+
+        /* Creates an instance of the UserService using a simple Retrofit builder using Moshi
+         * as a JSON converter, this will append the endpoints set on the UserService interface
+         * (for example '/api', '/api?results=2') with the base URL set here, resulting on the
+         * full URL that will be called: 'https://randomuser.me/api' */
+        val service = Retrofit.Builder()
+            .baseUrl("https://arima-reksadana-api.vercel.app")
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(MutualFundPriceService::class.java)
+
+        /* Calls the endpoint set on getUsers (/api) from UserService using enqueue method
+         * that creates a new worker thread to make the HTTP call */
+        service.getMutualFundPrice().enqueue(object : Callback<MutualFundPriceResponse> {
+
+            /* The HTTP call failed. This method is run on the main thread */
+            override fun onFailure(call: Call<MutualFundPriceResponse>, t: Throwable) {
+                Log.d("TAG_", "An error happened!")
+                t.printStackTrace()
+            }
+
+            /* The HTTP call was successful, we should still check status code and response body
+             * on a production app. This method is run on the main thread */
+            override fun onResponse(call: Call<MutualFundPriceResponse>, response: Response<MutualFundPriceResponse>) {
+                /* This will print the response of the network call to the Logcat */
+                Log.d("TAG_", moshi.adapter(MutualFundPriceResponse::class.java).toJson(response.body()))
+            }
+        })
     }
 }
