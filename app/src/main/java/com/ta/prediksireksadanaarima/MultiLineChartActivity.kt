@@ -32,7 +32,7 @@ import java.util.ArrayList
 
 class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueSelectedListener {
     private lateinit var chart: LineChart
-    private var fundPriceLists = ArrayList<ArrayList<MutualFundPriceModel>>()
+    private lateinit var fundPriceLists: MutualFundPriceResponse
     private lateinit var tvX: TextView
     private lateinit var tvY: TextView
 
@@ -73,8 +73,8 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
 
         override fun getAxisLabel(value: Float, axis: AxisBase?): String {
             val index = value.toInt()
-            return if (index < fundPriceLists[1].size) {
-                fundPriceLists[1][index].date
+            return if (index < fundPriceLists.pric.size) {
+                fundPriceLists.pric[index].date
             } else {
                 ""
             }
@@ -118,23 +118,37 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
     }
 
     private fun setChartData(){
-        //SetChartData
         chart.resetTracking()
         val dataSets = ArrayList<ILineDataSet>()
-        for (z in fundPriceLists.indices) {
-            val entries = ArrayList<Entry>()
-            for (i in fundPriceLists[z].indices) {
-                val fundPrice = fundPriceLists[z][i]
-                entries.add(Entry(i.toFloat(), fundPrice.price))
-            }
-            val d = LineDataSet(entries, "DataSet " + (z + 1))
-            d.lineWidth = 2.5f
-            d.circleRadius = 4f
-            val color = colors[z % colors.size]
-            d.color = color
-            d.setCircleColor(color)
-            dataSets.add(d)
+
+        // Prices
+        val entries = ArrayList<Entry>()
+        for (i in fundPriceLists.pric.indices){
+            val fundPrice = fundPriceLists.pric[i]
+            entries.add(Entry(i.toFloat(), fundPrice.price))
         }
+        var d = LineDataSet(entries, "NAV")
+        d.lineWidth = 2.5f
+        d.circleRadius = 4f
+        var color = colors[0 % colors.size]
+        d.color = color
+        d.setCircleColor(color)
+        dataSets.add(d)
+
+        // Prediction Prices
+        entries.clear()
+        for (i in fundPriceLists.pred.indices){
+            val fundPrice = fundPriceLists.pred[i]
+            entries.add(Entry(i.toFloat(), fundPrice.price))
+        }
+        d = LineDataSet(entries, "ARIMA Prediction")
+        d.lineWidth = 2.5f
+        d.circleRadius = 4f
+        color = colors[1 % colors.size]
+        d.color = color
+        d.setCircleColor(color)
+        dataSets.add(d)
+
         val data = LineData(dataSets)
         chart.data = data
         chart.invalidate()
@@ -233,34 +247,14 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
 
     override fun onNothingSelected() {}
 
-    // simulate api call
-    // we are initialising it directly
     private fun getPriceList() {
-        val fPriceTemp = ArrayList<MutualFundPriceModel>()
-        val fPriceTemp2 = ArrayList<MutualFundPriceModel>()
-
-        fPriceTemp.add(MutualFundPriceModel("2022-01-01", 56000.34f))
-        fPriceTemp.add(MutualFundPriceModel("2022-01-02", 60000.56f))
-        fPriceTemp.add(MutualFundPriceModel("2022-01-03", 20000.12f))
-        fPriceTemp.add(MutualFundPriceModel("2022-01-06", 56000.89f))
-        fPriceTemp.add(MutualFundPriceModel("2022-01-07", 1000000f))
-
-        fPriceTemp2.add(MutualFundPriceModel("2022-01-01", 70000.34f))
-        fPriceTemp2.add(MutualFundPriceModel("2022-01-02", 40000.5f))
-        fPriceTemp2.add(MutualFundPriceModel("2022-01-03", 30000f))
-        fPriceTemp2.add(MutualFundPriceModel("2022-01-06", 2000f))
-        fPriceTemp2.add(MutualFundPriceModel("2022-01-07", 90000f))
-
-        fundPriceLists.add(fPriceTemp)
-        fundPriceLists.add(fPriceTemp2)
-
         //API and JSON Handler
         val moshi = Moshi.Builder()
             .addLast(KotlinJsonAdapterFactory())
             .build()
 
-        /* Creates an instance of the UserService using a simple Retrofit builder using Moshi
-         * as a JSON converter, this will append the endpoints set on the UserService interface
+        /* Creates an instance of the MutualFundPriceService using a simple Retrofit builder using Moshi
+         * as a JSON converter, this will append the endpoints set on the MutualFundPriceService interface
          * (for example '/api', '/api?results=2') with the base URL set here, resulting on the
          * full URL that will be called: 'https://randomuser.me/api' */
         val service = Retrofit.Builder()
@@ -269,7 +263,7 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
             .build()
             .create(MutualFundPriceService::class.java)
 
-        /* Calls the endpoint set on getUsers (/api) from UserService using enqueue method
+        /* Calls the endpoint set on getUsers (/api) from MutualFundPriceService using enqueue method
          * that creates a new worker thread to make the HTTP call */
         service.getMutualFundPrice().enqueue(object : Callback<MutualFundPriceResponse> {
 
@@ -283,7 +277,8 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
              * on a production app. This method is run on the main thread */
             override fun onResponse(call: Call<MutualFundPriceResponse>, response: Response<MutualFundPriceResponse>) {
                 /* This will print the response of the network call to the Logcat */
-                Log.d("TAG_", moshi.adapter(MutualFundPriceResponse::class.java).toJson(response.body()))
+                val a = moshi.adapter(MutualFundPriceResponse::class.java).to(response.body())
+                fundPriceLists = response.body()!!
             }
         })
     }
