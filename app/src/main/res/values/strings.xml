@@ -5,7 +5,6 @@
     <string name="actionToggleValues">Toggle Values</string>
     <string name="actionToggleIcons">Toggle Icons</string>
     <string name="actionToggleCircles">Toggle Circles</string>
-    <string name="actionToggleAutoScale">Toggle Auto Scale</string>
     <string name="actionToggleHighlight">Toggle Highlight</string>
 
 </resources>

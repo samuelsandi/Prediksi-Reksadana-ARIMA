@@ -23,6 +23,8 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.ta.prediksireksadanaarima.models.MutualFundPriceModel
+import com.ta.prediksireksadanaarima.models.MutualFundPriceResponseModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -173,10 +175,6 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
                 }
                 chart.invalidate()
             }
-            R.id.actionToggleAutoScaleMinMax -> {
-                chart.isAutoScaleMinMaxEnabled = !chart.isAutoScaleMinMaxEnabled
-                chart.notifyDataSetChanged()
-            }
             R.id.actionToggleHighlight -> {
                 if (chart.data != null) {
                     chart.data.isHighlightEnabled = !chart.data.isHighlightEnabled
@@ -264,23 +262,23 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
 
         /* Calls the endpoint set on getUsers (/api) from MutualFundPriceService using enqueue method
          * that creates a new worker thread to make the HTTP call */
-        service.getMutualFundPrice().enqueue(object : Callback<MutualFundPriceResponse> {
+        service.getMutualFundPrice().enqueue(object : Callback<MutualFundPriceResponseModel> {
 
             /* The HTTP call failed. This method is run on the main thread */
-            override fun onFailure(call: Call<MutualFundPriceResponse>, t: Throwable) {
+            override fun onFailure(call: Call<MutualFundPriceResponseModel>, t: Throwable) {
                 Log.d("TAG_", "An error happened!")
                 t.printStackTrace()
             }
 
             /* The HTTP call was successful, we should still check status code and response body
              * on a production app. This method is run on the main thread */
-            override fun onResponse(call: Call<MutualFundPriceResponse>, response: Response<MutualFundPriceResponse>) {
+            override fun onResponse(call: Call<MutualFundPriceResponseModel>, response: Response<MutualFundPriceResponseModel>) {
                 /* This will print the response of the network call to the Logcat */
-                for (i in response.body()!!.pric.indices){
-                    fundPriceList.add(response.body()!!.pric[i])
+                for (i in response.body()!!.pastPrices.indices){
+                    fundPriceList.add(response.body()!!.pastPrices[i])
                 }
-                for (i in response.body()!!.pred.indices){
-                    predPriceList.add(response.body()!!.pred[i])
+                for (i in response.body()!!.predictionPrices.indices){
+                    predPriceList.add(response.body()!!.predictionPrices[i])
                 }
                 setChartData()
             }

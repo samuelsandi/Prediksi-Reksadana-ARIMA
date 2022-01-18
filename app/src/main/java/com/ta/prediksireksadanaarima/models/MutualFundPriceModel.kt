@@ -1,4 +1,4 @@
-package com.ta.prediksireksadanaarima
+package com.ta.prediksireksadanaarima.models
 
 data class MutualFundPriceModel (
     val date:String,

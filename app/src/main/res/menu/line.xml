@@ -14,10 +14,6 @@
         android:title="@string/actionToggleCircles">
     </item>
     <item
-        android:id="@+id/actionToggleAutoScaleMinMax"
-        android:title="@string/actionToggleAutoScale">
-    </item>
-    <item
         android:id="@+id/actionToggleHighlight"
         android:title="@string/actionToggleHighlight">
     </item>
