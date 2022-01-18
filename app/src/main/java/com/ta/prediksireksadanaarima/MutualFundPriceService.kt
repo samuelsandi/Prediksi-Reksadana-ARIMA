@@ -10,4 +10,8 @@ import retrofit2.http.GET
 interface MutualFundPriceService {
     @GET("/api")
     fun getMutualFundPrice(): Call<MutualFundPriceResponse>
+
+    companion object{
+        const val API_BASE_URL = "https://arima-reksadana-api.vercel.app"
+    }
 }

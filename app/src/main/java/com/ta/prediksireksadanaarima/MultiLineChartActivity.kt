@@ -133,15 +133,14 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
         }
 
         // Prediction chart styling
-        var d = LineDataSet(entries2, "ARIMA Prediction")
-        d.lineWidth = 2.5f
+        var d = LineDataSet(entries2, "Prediksi ARIMA")
         d.circleRadius = 4f
         d.color = ColorTemplate.VORDIPLOM_COLORS[0]
         d.setCircleColor(d.color)
         dataSets.add(d)
 
         // Price chart styling
-        d = LineDataSet(entries, "NAV")
+        d = LineDataSet(entries, "NAB (Rupiah)")
         d.lineWidth = 2.5f
         d.circleRadius = 4f
         d.color = ColorTemplate.VORDIPLOM_COLORS[3]
@@ -257,7 +256,7 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
          * (for example '/api', '/api?results=2') with the base URL set here, resulting on the
          * full URL that will be called: 'https://randomuser.me/api' */
         val service = Retrofit.Builder()
-            .baseUrl("https://arima-reksadana-api.vercel.app")
+            .baseUrl(MutualFundPriceService.API_BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
             .create(MutualFundPriceService::class.java)
