@@ -5,9 +5,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
-import android.view.MotionEvent
 import android.widget.TextView
-import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Legend
@@ -20,7 +18,6 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.ta.prediksireksadanaarima.models.MutualFundPriceModel
@@ -32,7 +29,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.ArrayList
 
-class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueSelectedListener {
+class MultiLineChartActivity : DemoBase(), OnChartValueSelectedListener {
     private lateinit var chart: LineChart
     private var fundPriceList = ArrayList<MutualFundPriceModel>()
     private var predPriceList = ArrayList<MutualFundPriceModel>()
@@ -157,7 +154,6 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.line, menu)
-        menu.removeItem(R.id.actionToggleIcons)
         return true
     }
 
@@ -194,46 +190,6 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
         return true
     }
 
-    override fun onChartGestureStart(me: MotionEvent, lastPerformedGesture: ChartGesture) {
-        Log.i("Gesture", "START, x: " + me.x + ", y: " + me.y)
-    }
-
-    override fun onChartGestureEnd(me: MotionEvent, lastPerformedGesture: ChartGesture) {
-        Log.i("Gesture", "END, lastGesture: $lastPerformedGesture")
-
-        // un-highlight values after the gesture is finished and no single-tap
-        if (lastPerformedGesture != ChartGesture.SINGLE_TAP) chart.highlightValues(null) // or highlightTouch(null) for callback to onNothingSelected(...)
-    }
-
-    override fun onChartLongPressed(me: MotionEvent) {
-        Log.i("LongPress", "Chart long pressed.")
-    }
-
-    override fun onChartDoubleTapped(me: MotionEvent) {
-        Log.i("DoubleTap", "Chart double-tapped.")
-    }
-
-    override fun onChartSingleTapped(me: MotionEvent) {
-        Log.i("SingleTap", "Chart single-tapped.")
-    }
-
-    override fun onChartFling(
-        me1: MotionEvent,
-        me2: MotionEvent,
-        velocityX: Float,
-        velocityY: Float
-    ) {
-        Log.i("Fling", "Chart fling. VelocityX: $velocityX, VelocityY: $velocityY")
-    }
-
-    override fun onChartScale(me: MotionEvent, scaleX: Float, scaleY: Float) {
-        Log.i("Scale / Zoom", "ScaleX: $scaleX, ScaleY: $scaleY")
-    }
-
-    override fun onChartTranslate(me: MotionEvent, dX: Float, dY: Float) {
-        Log.i("Translate / Move", "dX: $dX, dY: $dY")
-    }
-
     override fun onValueSelected(e: Entry, h: Highlight) {
         Log.i(
             "VAL SELECTED",
@@ -250,28 +206,17 @@ class MultiLineChartActivity : DemoBase(), OnChartGestureListener, OnChartValueS
             .addLast(KotlinJsonAdapterFactory())
             .build()
 
-        /* Creates an instance of the MutualFundPriceService using a simple Retrofit builder using Moshi
-         * as a JSON converter, this will append the endpoints set on the MutualFundPriceService interface
-         * (for example '/api', '/api?results=2') with the base URL set here, resulting on the
-         * full URL that will be called: 'https://randomuser.me/api' */
         val service = Retrofit.Builder()
             .baseUrl(MutualFundPriceService.API_BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
             .create(MutualFundPriceService::class.java)
 
-        /* Calls the endpoint set on getUsers (/api) from MutualFundPriceService using enqueue method
-         * that creates a new worker thread to make the HTTP call */
         service.getMutualFundPrice().enqueue(object : Callback<MutualFundPriceResponseModel> {
-
-            /* The HTTP call failed. This method is run on the main thread */
             override fun onFailure(call: Call<MutualFundPriceResponseModel>, t: Throwable) {
                 Log.d("TAG_", "An error happened!")
                 t.printStackTrace()
             }
-
-            /* The HTTP call was successful, we should still check status code and response body
-             * on a production app. This method is run on the main thread */
             override fun onResponse(call: Call<MutualFundPriceResponseModel>, response: Response<MutualFundPriceResponseModel>) {
                 /* This will print the response of the network call to the Logcat */
                 for (i in response.body()!!.pastPrices.indices){

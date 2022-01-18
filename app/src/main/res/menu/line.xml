@@ -6,10 +6,6 @@
         android:title="@string/actionToggleValues">
     </item>
     <item
-        android:id="@+id/actionToggleIcons"
-        android:title="@string/actionToggleIcons">
-    </item>
-    <item
         android:id="@+id/actionToggleCircles"
         android:title="@string/actionToggleCircles">
     </item>
