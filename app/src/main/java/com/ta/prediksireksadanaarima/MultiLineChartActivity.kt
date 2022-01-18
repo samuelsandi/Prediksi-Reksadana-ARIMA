@@ -33,8 +33,7 @@ class MultiLineChartActivity : DemoBase(), OnChartValueSelectedListener {
     private lateinit var chart: LineChart
     private var fundPriceList = ArrayList<MutualFundPriceModel>()
     private var predPriceList = ArrayList<MutualFundPriceModel>()
-    private lateinit var tvX: TextView
-    private lateinit var tvY: TextView
+    private lateinit var rdNameTx: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,21 +44,22 @@ class MultiLineChartActivity : DemoBase(), OnChartValueSelectedListener {
         )
         setContentView(R.layout.activity_multi_line_chart)
 
-        tvX = findViewById(R.id.tvXMax)
-        tvY = findViewById(R.id.tvYMax)
+        rdNameTx = findViewById(R.id.rdNameTx)
 
         val intent = intent
-        val mutualFundName = intent.getStringExtra("mutualFundName")
+        val rdCode = intent.getStringExtra("rdCode")
+        val rdName = intent.getStringExtra("rdName")
 
         //actionbar
         val actionbar = supportActionBar
         //set actionbar title
-        actionbar!!.title = mutualFundName
+        actionbar!!.title = rdName
         //set back button
         actionbar.setDisplayHomeAsUpEnabled(true)
+        rdNameTx.text = rdCode
 
         chart = findViewById(R.id.chart1)
-        getPriceList()
+        getPriceList(rdCode)
         initChart()
     }
 
@@ -108,8 +108,6 @@ class MultiLineChartActivity : DemoBase(), OnChartValueSelectedListener {
         l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
         l.orientation = Legend.LegendOrientation.VERTICAL
         l.setDrawInside(false)
-        tvX.text = "TBD"
-        tvY.text = "TBD"
     }
 
     private fun setChartData(){
@@ -200,7 +198,7 @@ class MultiLineChartActivity : DemoBase(), OnChartValueSelectedListener {
 
     override fun onNothingSelected() {}
 
-    private fun getPriceList() {
+    private fun getPriceList(rdCode: String?) {
         //API and JSON Handler
         val moshi = Moshi.Builder()
             .addLast(KotlinJsonAdapterFactory())
@@ -212,7 +210,7 @@ class MultiLineChartActivity : DemoBase(), OnChartValueSelectedListener {
             .build()
             .create(MutualFundPriceService::class.java)
 
-        service.getMutualFundPrice().enqueue(object : Callback<MutualFundPriceResponseModel> {
+        service.getMutualFundPrice(rdCode).enqueue(object : Callback<MutualFundPriceResponseModel> {
             override fun onFailure(call: Call<MutualFundPriceResponseModel>, t: Throwable) {
                 Log.d("TAG_", "An error happened!")
                 t.printStackTrace()
