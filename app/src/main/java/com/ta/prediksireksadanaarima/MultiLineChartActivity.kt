@@ -25,8 +25,8 @@ import androidx.appcompat.app.AppCompatActivity
 
 class MultiLineChartActivity : OnChartValueSelectedListener, AppCompatActivity() {
     private lateinit var chart: LineChart
-    private var fundPriceList = ArrayList<MutualFundPriceModel>()
-    private var predPriceList = ArrayList<MutualFundPriceModel>()
+    var fundPriceList = ArrayList<MutualFundPriceModel>()
+    var predPriceList = ArrayList<MutualFundPriceModel>()
     private lateinit var rdNameTx: TextView
     private var tfRegular: Typeface? = null
     private var tfLight: Typeface? = null
@@ -60,7 +60,7 @@ class MultiLineChartActivity : OnChartValueSelectedListener, AppCompatActivity()
         chart = findViewById(R.id.chart1)
 
         val handler = APIHandler()
-        handler.getPriceList(rdCode, fundPriceList, predPriceList, this)
+        handler.getPriceList(rdCode, this)
         initChart()
     }
 
