@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">Prediksi Reksadana ARIMA</string>
-    <string name="button_name">Lihat Grafik</string>
-
     <string name="actionToggleValues">Toggle Values</string>
     <string name="actionToggleCircles">Toggle Circles</string>
     <string name="actionToggleHighlight">Toggle Highlight</string>
-
 </resources>

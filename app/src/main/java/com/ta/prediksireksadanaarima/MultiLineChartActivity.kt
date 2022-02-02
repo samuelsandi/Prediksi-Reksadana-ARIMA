@@ -1,5 +1,6 @@
 package com.ta.prediksireksadanaarima
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -28,15 +29,21 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.ArrayList
+import androidx.appcompat.app.AppCompatActivity
 
-class MultiLineChartActivity : DemoBase(), OnChartValueSelectedListener {
+class MultiLineChartActivity : OnChartValueSelectedListener, AppCompatActivity() {
     private lateinit var chart: LineChart
     private var fundPriceList = ArrayList<MutualFundPriceModel>()
     private var predPriceList = ArrayList<MutualFundPriceModel>()
     private lateinit var rdNameTx: TextView
+    private var tfRegular: Typeface? = null
+    private var tfLight: Typeface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        tfRegular = Typeface.createFromAsset(assets, "OpenSans-Regular.ttf")
+        tfLight = Typeface.createFromAsset(assets, "OpenSans-Light.ttf")
+
         @Suppress("DEPRECATION")
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
