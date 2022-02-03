@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PrediksiReksadanaARIMA">
         <activity
-            android:name=".views.MultiLineChartActivity"
+            android:name=".views.ChartActivity"
             android:exported="false" />
         <activity
             android:name=".views.MainActivity"

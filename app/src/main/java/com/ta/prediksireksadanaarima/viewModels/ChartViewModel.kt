@@ -3,11 +3,11 @@ package com.ta.prediksireksadanaarima.viewModels
 import androidx.lifecycle.ViewModel
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
-import com.ta.prediksireksadanaarima.views.MultiLineChartActivity
+import com.ta.prediksireksadanaarima.views.ChartActivity
 
-class MultiLineChartViewModel: ViewModel() {
+class ChartViewModel: ViewModel() {
 
-    fun initChart(activity: MultiLineChartActivity){
+    fun initChart(activity: ChartActivity){
         activity.chart.setOnChartValueSelectedListener(activity)
         activity.chart.setDrawGridBackground(false)
         activity.chart.description.isEnabled = false
