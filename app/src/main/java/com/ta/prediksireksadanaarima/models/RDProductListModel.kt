@@ -1,8 +1,8 @@
-package com.ta.prediksireksadanaarima.utilities
+package com.ta.prediksireksadanaarima.models
 
 import com.ta.prediksireksadanaarima.models.RDProductModel
 
-class RDProductList {
+class RDProductListModel {
     companion object{
         fun getList(): ArrayList<RDProductModel> {
             val list = ArrayList<RDProductModel>()

@@ -24,8 +24,11 @@ import java.util.ArrayList
 import androidx.appcompat.app.AppCompatActivity
 import com.ta.prediksireksadanaarima.utilities.APIHandler
 import com.ta.prediksireksadanaarima.R
+import com.ta.prediksireksadanaarima.viewModels.MultiLineChartViewModel
 
 class MultiLineChartActivity : OnChartValueSelectedListener, AppCompatActivity() {
+
+    private val viewModel = MultiLineChartViewModel()
     private lateinit var chart: LineChart
     var fundPriceList = ArrayList<MutualFundPriceModel>()
     var predPriceList = ArrayList<MutualFundPriceModel>()

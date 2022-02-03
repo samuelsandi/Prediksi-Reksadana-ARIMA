@@ -1,4 +1,7 @@
 package com.ta.prediksireksadanaarima.viewModels
 
-class MultiLineChartViewModel {
+import androidx.lifecycle.ViewModel
+
+class MultiLineChartViewModel: ViewModel() {
+
 }
