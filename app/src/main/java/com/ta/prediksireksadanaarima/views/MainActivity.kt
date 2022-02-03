@@ -12,7 +12,6 @@ import com.ta.prediksireksadanaarima.viewModels.MainViewModel
 class MainActivity : AppCompatActivity() {
 
     private val viewModel = MainViewModel()
-
     lateinit var listView: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {

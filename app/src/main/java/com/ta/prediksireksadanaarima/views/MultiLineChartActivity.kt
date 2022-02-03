@@ -9,13 +9,11 @@ import android.view.WindowManager
 import android.widget.TextView
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.components.AxisBase
-import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
@@ -29,7 +27,7 @@ import com.ta.prediksireksadanaarima.viewModels.MultiLineChartViewModel
 class MultiLineChartActivity : OnChartValueSelectedListener, AppCompatActivity() {
 
     private val viewModel = MultiLineChartViewModel()
-    private lateinit var chart: LineChart
+    lateinit var chart: LineChart
     var fundPriceList = ArrayList<MutualFundPriceModel>()
     var predPriceList = ArrayList<MutualFundPriceModel>()
     private lateinit var rdNameTx: TextView
@@ -66,7 +64,7 @@ class MultiLineChartActivity : OnChartValueSelectedListener, AppCompatActivity()
 
         val handler = APIHandler()
         handler.getPriceList(rdCode, this)
-        initChart()
+        viewModel.initChart(this)
     }
 
     inner class MyAxisFormatter : IndexAxisValueFormatter() {
@@ -82,39 +80,39 @@ class MultiLineChartActivity : OnChartValueSelectedListener, AppCompatActivity()
         }
     }
 
-    private fun initChart(){
-        chart.setOnChartValueSelectedListener(this)
-        chart.setDrawGridBackground(false)
-        chart.description.isEnabled = false
-        chart.setDrawBorders(false)
-        chart.axisLeft.isEnabled = false
-        chart.axisRight.setDrawAxisLine(false)
-        chart.axisRight.setDrawGridLines(false)
-        chart.xAxis.setDrawAxisLine(false)
-        chart.xAxis.setDrawGridLines(false)
-
-        // to draw label on xAxis (from chart code)
-        chart.xAxis.position = XAxis.XAxisPosition.BOTTOM_INSIDE
-        chart.xAxis.valueFormatter = MyAxisFormatter()
-        chart.xAxis.setDrawLabels(true)
-        chart.xAxis.granularity = 1f
-        chart.xAxis.labelRotationAngle = +90f
-
-        // enable touch gestures
-        chart.setTouchEnabled(true)
-
-        // enable scaling and dragging
-        chart.isDragEnabled = true
-        chart.setScaleEnabled(true)
-
-        // if disabled, scaling can be done on x- and y-axis separately
-        chart.setPinchZoom(false)
-        val l = chart.legend
-        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-        l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-        l.orientation = Legend.LegendOrientation.VERTICAL
-        l.setDrawInside(false)
-    }
+//    private fun initChart(){
+//        chart.setOnChartValueSelectedListener(this)
+//        chart.setDrawGridBackground(false)
+//        chart.description.isEnabled = false
+//        chart.setDrawBorders(false)
+//        chart.axisLeft.isEnabled = false
+//        chart.axisRight.setDrawAxisLine(false)
+//        chart.axisRight.setDrawGridLines(false)
+//        chart.xAxis.setDrawAxisLine(false)
+//        chart.xAxis.setDrawGridLines(false)
+//
+//        // to draw label on xAxis (from chart code)
+//        chart.xAxis.position = XAxis.XAxisPosition.BOTTOM_INSIDE
+//        chart.xAxis.valueFormatter = MyAxisFormatter()
+//        chart.xAxis.setDrawLabels(true)
+//        chart.xAxis.granularity = 1f
+//        chart.xAxis.labelRotationAngle = +90f
+//
+//        // enable touch gestures
+//        chart.setTouchEnabled(true)
+//
+//        // enable scaling and dragging
+//        chart.isDragEnabled = true
+//        chart.setScaleEnabled(true)
+//
+//        // if disabled, scaling can be done on x- and y-axis separately
+//        chart.setPinchZoom(false)
+//        val l = chart.legend
+//        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+//        l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+//        l.orientation = Legend.LegendOrientation.VERTICAL
+//        l.setDrawInside(false)
+//    }
 
     fun setChartData(){
         chart.resetTracking()
