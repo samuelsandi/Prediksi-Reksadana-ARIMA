@@ -1,10 +1,12 @@
-package com.ta.prediksireksadanaarima
+package com.ta.prediksireksadanaarima.views
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import com.ta.prediksireksadanaarima.R
+import com.ta.prediksireksadanaarima.utilities.RDProductList
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,8 +25,8 @@ class MainActivity : AppCompatActivity() {
         listView.adapter = adapter
         listView.setOnItemClickListener { _, _, position, _ ->
             val intent = Intent(this@MainActivity, MultiLineChartActivity::class.java)
-            intent.putExtra("rdCode",RDProductList.getList()[position].code)
-            intent.putExtra("rdName",RDProductList.getList()[position].name)
+            intent.putExtra("rdCode", RDProductList.getList()[position].code)
+            intent.putExtra("rdName", RDProductList.getList()[position].name)
             startActivity(intent)
         }
     }

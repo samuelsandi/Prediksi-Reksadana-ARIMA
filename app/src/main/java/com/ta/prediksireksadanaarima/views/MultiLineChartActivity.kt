@@ -1,4 +1,4 @@
-package com.ta.prediksireksadanaarima
+package com.ta.prediksireksadanaarima.views
 
 import android.graphics.Typeface
 import android.os.Bundle
@@ -22,6 +22,8 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.ta.prediksireksadanaarima.models.MutualFundPriceModel
 import java.util.ArrayList
 import androidx.appcompat.app.AppCompatActivity
+import com.ta.prediksireksadanaarima.utilities.APIHandler
+import com.ta.prediksireksadanaarima.R
 
 class MultiLineChartActivity : OnChartValueSelectedListener, AppCompatActivity() {
     private lateinit var chart: LineChart

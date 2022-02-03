@@ -12,10 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PrediksiReksadanaARIMA">
         <activity
-            android:name=".MultiLineChartActivity"
+            android:name=".views.MultiLineChartActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".views.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

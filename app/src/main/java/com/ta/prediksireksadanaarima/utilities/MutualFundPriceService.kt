@@ -1,4 +1,4 @@
-package com.ta.prediksireksadanaarima
+package com.ta.prediksireksadanaarima.utilities
 
 import com.ta.prediksireksadanaarima.models.MutualFundPriceResponseModel
 import retrofit2.Call
