@@ -42,7 +42,6 @@ class RDProductListModel {
             list.add(RDProductModel("RD1764","TRIM Kapital"))
             list.add(RDProductModel("RD1765","TRIM Kapital Plus"))
             list.add(RDProductModel("RD1366","TRIM Syariah Saham"))
-
             return list
         }
     }

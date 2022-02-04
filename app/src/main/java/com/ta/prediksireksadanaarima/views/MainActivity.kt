@@ -3,6 +3,7 @@ package com.ta.prediksireksadanaarima.views
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.ta.prediksireksadanaarima.R
 import com.ta.prediksireksadanaarima.models.RDProductListModel
@@ -18,7 +19,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         listView = findViewById(R.id.rd_list_view)
-        viewModel.getProductList(this)
+
+        val adapter = ArrayAdapter(this,
+                                    android.R.layout.simple_list_item_1,
+                                    viewModel.getProductList())
+        listView.adapter = adapter
 
         listView.setOnItemClickListener { _, _, position, _ ->
             val intent = Intent(this@MainActivity, ChartActivity::class.java)
