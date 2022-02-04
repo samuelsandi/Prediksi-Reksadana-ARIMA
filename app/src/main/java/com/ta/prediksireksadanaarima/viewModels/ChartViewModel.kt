@@ -18,15 +18,6 @@ class ChartViewModel: ViewModel() {
 
     var fundPriceList = ArrayList<MutualFundPriceModel>()
     var predictionList = ArrayList<MutualFundPriceModel>()
-    private var isRequestDone = true
-
-    fun setRequestDone() {
-        isRequestDone = true
-    }
-
-    fun setRequestNotDone() {
-        isRequestDone = false
-    }
 
     fun initChart(chart: LineChart){
         chart.setDrawGridBackground(false)

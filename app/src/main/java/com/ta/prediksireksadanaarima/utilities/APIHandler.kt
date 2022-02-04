@@ -17,10 +17,7 @@ class APIHandler {
 
     fun getPriceList(rdCode: String?,
                      viewModel: ChartViewModel,
-                     chart: LineChart
-    ) {
-
-        viewModel.setRequestNotDone()
+                     chart: LineChart) {
 
         //API and JSON Handler
         val moshi = Moshi.Builder()
@@ -37,7 +34,6 @@ class APIHandler {
             override fun onFailure(call: Call<MutualFundPriceResponseModel>, t: Throwable) {
                 Log.d("TAG_", "An error happened!")
                 t.printStackTrace()
-                viewModel.setRequestDone()
             }
             override fun onResponse(call: Call<MutualFundPriceResponseModel>,
                                     response: Response<MutualFundPriceResponseModel>) {
