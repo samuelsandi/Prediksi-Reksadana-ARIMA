@@ -1,6 +1,5 @@
 package com.ta.prediksireksadanaarima.viewModels
 
-import android.widget.ListView
 import androidx.lifecycle.ViewModel
 import com.ta.prediksireksadanaarima.models.RDProductListModel
 

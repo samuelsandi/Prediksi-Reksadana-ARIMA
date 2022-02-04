@@ -1,9 +1,11 @@
 package com.ta.prediksireksadanaarima.utilities
 
 import android.util.Log
+import com.github.mikephil.charting.charts.LineChart
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.ta.prediksireksadanaarima.models.MutualFundPriceResponseModel
+import com.ta.prediksireksadanaarima.viewModels.ChartViewModel
 import com.ta.prediksireksadanaarima.views.ChartActivity
 import retrofit2.Call
 import retrofit2.Callback
@@ -14,8 +16,11 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 class APIHandler {
 
     fun getPriceList(rdCode: String?,
-                     chartActivity: ChartActivity
+                     viewModel: ChartViewModel,
+                     chart: LineChart
     ) {
+
+        viewModel.setRequestNotDone()
 
         //API and JSON Handler
         val moshi = Moshi.Builder()
@@ -32,17 +37,17 @@ class APIHandler {
             override fun onFailure(call: Call<MutualFundPriceResponseModel>, t: Throwable) {
                 Log.d("TAG_", "An error happened!")
                 t.printStackTrace()
+                viewModel.setRequestDone()
             }
             override fun onResponse(call: Call<MutualFundPriceResponseModel>,
                                     response: Response<MutualFundPriceResponseModel>) {
-                /* This will print the response of the network call to the Logcat */
                 for (i in response.body()!!.pastPrices.indices){
-                    chartActivity.fundPriceList.add(response.body()!!.pastPrices[i])
+                    viewModel.fundPriceList.add(response.body()!!.pastPrices[i])
                 }
                 for (i in response.body()!!.predictionPrices.indices){
-                    chartActivity.predPriceList.add(response.body()!!.predictionPrices[i])
+                    viewModel.predictionList.add(response.body()!!.predictionPrices[i])
                 }
-                chartActivity.setChartData()
+                viewModel.setChartData(chart)
             }
         })
     }
