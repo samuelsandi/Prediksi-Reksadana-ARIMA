@@ -1,7 +1,5 @@
 package com.ta.prediksireksadanaarima.models
 
-import com.ta.prediksireksadanaarima.models.RDProductModel
-
 class RDProductListModel {
     companion object{
         fun getList(): ArrayList<RDProductModel> {
