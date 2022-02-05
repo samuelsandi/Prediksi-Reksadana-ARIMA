@@ -6,7 +6,6 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.ta.prediksireksadanaarima.models.MutualFundPriceResponseModel
 import com.ta.prediksireksadanaarima.viewModels.ChartViewModel
-import com.ta.prediksireksadanaarima.views.ChartActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
