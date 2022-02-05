@@ -52,19 +52,6 @@ class ChartViewModel: ViewModel() {
         l.setDrawInside(false)
     }
 
-    inner class MyAxisFormatter : IndexAxisValueFormatter() {
-
-        override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-            val index = value.toInt()
-            val fundPriceLists: List<MutualFundPriceModel> = fundPriceList + predictionList
-            return if (index < fundPriceLists.size) {
-                fundPriceLists[index].date
-            } else {
-                ""
-            }
-        }
-    }
-
     fun setChartData(chart: LineChart){
         chart.resetTracking()
         val dataSets = ArrayList<ILineDataSet>()
@@ -103,5 +90,18 @@ class ChartViewModel: ViewModel() {
         val data = LineData(dataSets)
         chart.data = data
         chart.invalidate()
+    }
+
+    private inner class MyAxisFormatter : IndexAxisValueFormatter() {
+
+        override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+            val index = value.toInt()
+            val fundPriceLists: List<MutualFundPriceModel> = fundPriceList + predictionList
+            return if (index < fundPriceLists.size) {
+                fundPriceLists[index].date
+            } else {
+                ""
+            }
+        }
     }
 }
