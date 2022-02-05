@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.ta.prediksireksadanaarima.R
-import com.ta.prediksireksadanaarima.models.RDProductListModel
+import com.ta.prediksireksadanaarima.utilities.RDProductList
 import com.ta.prediksireksadanaarima.viewModels.MainViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -27,8 +27,8 @@ class MainActivity : AppCompatActivity() {
 
         listView.setOnItemClickListener { _, _, position, _ ->
             val intent = Intent(this@MainActivity, ChartActivity::class.java)
-            intent.putExtra("rdCode", RDProductListModel.getList()[position].code)
-            intent.putExtra("rdName", RDProductListModel.getList()[position].name)
+            intent.putExtra("rdCode", RDProductList.getList()[position].code)
+            intent.putExtra("rdName", RDProductList.getList()[position].name)
             startActivity(intent)
         }
     }

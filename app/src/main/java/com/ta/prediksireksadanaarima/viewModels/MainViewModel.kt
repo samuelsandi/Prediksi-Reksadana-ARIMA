@@ -1,10 +1,10 @@
 package com.ta.prediksireksadanaarima.viewModels
 
 import androidx.lifecycle.ViewModel
-import com.ta.prediksireksadanaarima.models.RDProductListModel
+import com.ta.prediksireksadanaarima.utilities.RDProductList
 
 class MainViewModel: ViewModel() {
-    private val model = RDProductListModel
+    private val model = RDProductList
 
     fun getProductList(): Array<String?> {
         val list = arrayOfNulls<String>(36)
