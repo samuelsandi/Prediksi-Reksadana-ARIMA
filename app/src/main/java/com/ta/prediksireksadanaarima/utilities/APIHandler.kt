@@ -29,6 +29,8 @@ class APIHandler {
             .build()
             .create(MutualFundPriceService::class.java)
 
+        Log.d("TAG_", service.getMutualFundPrice(rdCode).toString())
+
         service.getMutualFundPrice(rdCode).enqueue(object : Callback<MutualFundPriceResponseModel> {
             override fun onFailure(call: Call<MutualFundPriceResponseModel>, t: Throwable) {
                 Log.d("TAG_", "An error happened!")
@@ -36,13 +38,15 @@ class APIHandler {
             }
             override fun onResponse(call: Call<MutualFundPriceResponseModel>,
                                     response: Response<MutualFundPriceResponseModel>) {
-                for (i in response.body()!!.pastPrices.indices){
-                    viewModel.fundPriceList.add(response.body()!!.pastPrices[i])
-                }
-                for (i in response.body()!!.predictionPrices.indices){
-                    viewModel.predictionList.add(response.body()!!.predictionPrices[i])
-                }
-                viewModel.setChartData(chart)
+//                for (i in response.body()!!.pastPrices.indices){
+//                    viewModel.fundPriceList.add(response.body()!!.pastPrices[i])
+//                }
+//                for (i in response.body()!!.predictionPrices.indices){
+//                    viewModel.predictionList.add(response.body()!!.predictionPrices[i])
+//                }
+                Log.d("TAG_", response.body()!!.data)
+
+//                viewModel.setChartData(chart)
             }
         })
     }

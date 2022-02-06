@@ -3,17 +3,22 @@ package com.ta.prediksireksadanaarima.utilities
 import com.ta.prediksireksadanaarima.models.MutualFundPriceResponseModel
 import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Query
-
-/* Retrofit service that maps the different endpoints on the API, you'd create one
- * method per endpoint, and use the @Path, @Query and other annotations to customize
- * these at runtime */
+import retrofit2.http.Headers
+import retrofit2.http.Path
 
 interface MutualFundPriceService {
-    @GET("/api?")
-    fun getMutualFundPrice(@Query("rd") rdCode: String?): Call<MutualFundPriceResponseModel>
+    @Headers(
+        "Accept: application/json, text/plain, */*",
+        "Accept-Encoding: gzip, deflate, br",
+        "Accept-Language: en-US,en;q=0.9",
+        "Origin: https://app.bibit.id",
+        "Referer: https://app.bibit.id/",
+        "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0",
+    )
+    @GET("/products/{rd_code}/chart?period=1M")
+    fun getMutualFundPrice(@Path(value="rd_code", encoded = true) rdCode: String?): Call<MutualFundPriceResponseModel>
 
     companion object{
-        const val API_BASE_URL = "https://arima-reksadana-api.vercel.app"
+        const val API_BASE_URL = "https://api.bibit.id"
     }
 }
