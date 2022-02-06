@@ -29,7 +29,6 @@ class ChartActivity : OnChartValueSelectedListener, AppCompatActivity() {
     private lateinit var chart: LineChart
     var fundPriceList = ArrayList<PriceEntry>()
     var predictionList = ArrayList<PriceEntry>()
-    private lateinit var rdNameTx: TextView
     private var tfRegular: Typeface? = null
     private var tfLight: Typeface? = null
 
@@ -45,8 +44,6 @@ class ChartActivity : OnChartValueSelectedListener, AppCompatActivity() {
         )
         setContentView(R.layout.activity_multi_line_chart)
 
-        rdNameTx = findViewById(R.id.rdNameTx)
-
         val intent = intent
         val rdCode = intent.getStringExtra("rdCode")
         val rdName = intent.getStringExtra("rdName")
@@ -57,7 +54,6 @@ class ChartActivity : OnChartValueSelectedListener, AppCompatActivity() {
         actionbar!!.title = rdName
         //set back button
         actionbar.setDisplayHomeAsUpEnabled(true)
-        rdNameTx.text = rdCode
 
         chart = findViewById(R.id.chart1)
 
