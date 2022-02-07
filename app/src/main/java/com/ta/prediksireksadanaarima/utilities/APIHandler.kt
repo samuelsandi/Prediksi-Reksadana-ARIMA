@@ -4,7 +4,9 @@ import android.util.Log
 import com.github.mikephil.charting.charts.LineChart
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.ta.prediksireksadanaarima.models.MutualFundPriceResponseModel
+import com.ta.prediksireksadanaarima.models.MutualFundStringResponseModel
+import com.ta.prediksireksadanaarima.models.MutualFundPriceModel
+import com.ta.prediksireksadanaarima.models.MutualFundRawResponseModel
 import com.ta.prediksireksadanaarima.viewModels.ChartViewModel
 import retrofit2.Call
 import retrofit2.Callback
@@ -29,21 +31,30 @@ class APIHandler {
             .build()
             .create(MutualFundPriceService::class.java)
 
-        service.getMutualFundPrice(rdCode).enqueue(object : Callback<MutualFundPriceResponseModel> {
-            override fun onFailure(call: Call<MutualFundPriceResponseModel>, t: Throwable) {
+        service.getMutualFundPrice(rdCode).enqueue(object : Callback<MutualFundRawResponseModel> {
+            override fun onFailure(call: Call<MutualFundRawResponseModel>, t: Throwable) {
                 Log.d("TAG_", "An error happened!")
                 t.printStackTrace()
             }
-            override fun onResponse(call: Call<MutualFundPriceResponseModel>,
-                                    response: Response<MutualFundPriceResponseModel>) {
+            override fun onResponse(call: Call<MutualFundRawResponseModel>,
+                                    response: Response<MutualFundRawResponseModel>) {
 //                for (i in response.body()!!.pastPrices.indices){
 //                    viewModel.fundPriceList.add(response.body()!!.pastPrices[i])
 //                }
 //                for (i in response.body()!!.predictionPrices.indices){
 //                    viewModel.predictionList.add(response.body()!!.predictionPrices[i])
 //                }
-                val decryptedData = AESDecryptor(response.body()!!.data).decrypt()
-//                Log.d("TAG_", decryptedData)
+                val decryptedString = AESDecryptor(response.body()!!.data).decrypt()
+                val adapter = moshi.adapter(MutualFundStringResponseModel::class.java)
+                val data = adapter.fromJson(decryptedString)
+                val chartModel = data!!.chart
+
+                for (i in chartModel.indices) {
+                    val priceModel = MutualFundPriceModel(chartModel[i].formated_date,
+                                                            chartModel[i].value)
+                    viewModel.fundPriceList.add(priceModel)
+                }
+
 
 //                viewModel.setChartData(chart)
             }

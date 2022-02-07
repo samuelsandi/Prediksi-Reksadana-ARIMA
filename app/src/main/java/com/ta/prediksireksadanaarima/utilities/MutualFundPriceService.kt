@@ -1,6 +1,6 @@
 package com.ta.prediksireksadanaarima.utilities
 
-import com.ta.prediksireksadanaarima.models.MutualFundPriceResponseModel
+import com.ta.prediksireksadanaarima.models.MutualFundRawResponseModel
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -16,7 +16,7 @@ interface MutualFundPriceService {
         "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0",
     )
     @GET("/products/{rd_code}/chart?period=1M")
-    fun getMutualFundPrice(@Path(value="rd_code", encoded = true) rdCode: String?): Call<MutualFundPriceResponseModel>
+    fun getMutualFundPrice(@Path(value="rd_code", encoded = true) rdCode: String?): Call<MutualFundRawResponseModel>
 
     companion object{
         const val API_BASE_URL = "https://api.bibit.id"

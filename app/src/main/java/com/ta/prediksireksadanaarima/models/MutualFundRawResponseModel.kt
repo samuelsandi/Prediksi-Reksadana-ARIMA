@@ -1,6 +1,6 @@
 package com.ta.prediksireksadanaarima.models
 
-data class MutualFundPriceResponseModel(
+data class MutualFundRawResponseModel(
     val message: String,
     val data: String
 )

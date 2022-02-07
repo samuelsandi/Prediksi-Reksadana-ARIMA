@@ -1,6 +1,5 @@
 package com.ta.prediksireksadanaarima.utilities
 
-import android.util.Log
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
