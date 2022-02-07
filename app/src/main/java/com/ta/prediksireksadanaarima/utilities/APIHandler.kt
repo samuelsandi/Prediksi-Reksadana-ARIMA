@@ -29,8 +29,6 @@ class APIHandler {
             .build()
             .create(MutualFundPriceService::class.java)
 
-        Log.d("TAG_", service.getMutualFundPrice(rdCode).toString())
-
         service.getMutualFundPrice(rdCode).enqueue(object : Callback<MutualFundPriceResponseModel> {
             override fun onFailure(call: Call<MutualFundPriceResponseModel>, t: Throwable) {
                 Log.d("TAG_", "An error happened!")
@@ -44,7 +42,8 @@ class APIHandler {
 //                for (i in response.body()!!.predictionPrices.indices){
 //                    viewModel.predictionList.add(response.body()!!.predictionPrices[i])
 //                }
-                Log.d("TAG_", response.body()!!.data)
+                val decryptedData = AESDecryptor(response.body()!!.data).decrypt()
+//                Log.d("TAG_", decryptedData)
 
 //                viewModel.setChartData(chart)
             }
