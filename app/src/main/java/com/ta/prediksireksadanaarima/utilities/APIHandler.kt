@@ -38,12 +38,7 @@ class APIHandler {
             }
             override fun onResponse(call: Call<MutualFundRawResponseModel>,
                                     response: Response<MutualFundRawResponseModel>) {
-//                for (i in response.body()!!.pastPrices.indices){
-//                    viewModel.fundPriceList.add(response.body()!!.pastPrices[i])
-//                }
-//                for (i in response.body()!!.predictionPrices.indices){
-//                    viewModel.predictionList.add(response.body()!!.predictionPrices[i])
-//                }
+
                 val decryptedString = AESDecryptor(response.body()!!.data).decrypt()
                 val adapter = moshi.adapter(MutualFundStringResponseModel::class.java)
                 val data = adapter.fromJson(decryptedString)
