@@ -55,8 +55,9 @@ class APIHandler {
                     viewModel.fundPriceList.add(priceModel)
                 }
 
+                viewModel.predictionList = Predictor(viewModel.fundPriceList).predict()
 
-//                viewModel.setChartData(chart)
+                viewModel.setChartData(chart)
             }
         })
     }
