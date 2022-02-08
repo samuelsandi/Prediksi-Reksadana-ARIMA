@@ -13,6 +13,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import kotlin.system.measureTimeMillis
 
 class APIHandler {
 
@@ -31,30 +32,37 @@ class APIHandler {
             .build()
             .create(MutualFundPriceService::class.java)
 
-        service.getMutualFundPrice(rdCode).enqueue(object : Callback<MutualFundRawResponseModel> {
-            override fun onFailure(call: Call<MutualFundRawResponseModel>, t: Throwable) {
-                Log.d("TAG_", "An error happened!")
-                t.printStackTrace()
-            }
-            override fun onResponse(call: Call<MutualFundRawResponseModel>,
-                                    response: Response<MutualFundRawResponseModel>) {
-
-                val decryptedString = AESDecryptor(response.body()!!.data).decrypt()
-                val adapter = moshi.adapter(MutualFundStringResponseModel::class.java)
-                val data = adapter.fromJson(decryptedString)
-                val chartModel = data!!.chart
-
-                for (i in chartModel.indices) {
-                    val priceModel = MutualFundPriceModel(chartModel[i].formated_date,
-                                                            chartModel[i].value)
-                    viewModel.fundPriceList.add(priceModel)
+        val timeInMillis = measureTimeMillis {
+            //Start Measuring Time
+            service.getMutualFundPrice(rdCode).enqueue(object : Callback<MutualFundRawResponseModel> {
+                override fun onFailure(call: Call<MutualFundRawResponseModel>, t: Throwable) {
+                    Log.d("TAG_", "An error happened!")
+                    t.printStackTrace()
                 }
+                override fun onResponse(call: Call<MutualFundRawResponseModel>,
+                                        response: Response<MutualFundRawResponseModel>) {
 
-                viewModel.predictionList = Predictor(viewModel.fundPriceList).predict()
+                    val decryptedString = AESDecryptor(response.body()!!.data).decrypt()
+                    val adapter = moshi.adapter(MutualFundStringResponseModel::class.java)
+                    val data = adapter.fromJson(decryptedString)
+                    val chartModel = data!!.chart
 
-                viewModel.setChartData(chart)
-            }
-        })
+                    for (i in chartModel.indices) {
+                        val priceModel = MutualFundPriceModel(chartModel[i].formated_date,
+                                                                chartModel[i].value)
+                        viewModel.fundPriceList.add(priceModel)
+                    }
+
+                    viewModel.predictionList = Predictor(viewModel.fundPriceList).predict()
+
+                    viewModel.setChartData(chart)
+                }
+            })
+            //Stop Measuring Time
+        }
+
+        Log.d("TIME_","(The operation took $timeInMillis ms)")
+
     }
 
 }
