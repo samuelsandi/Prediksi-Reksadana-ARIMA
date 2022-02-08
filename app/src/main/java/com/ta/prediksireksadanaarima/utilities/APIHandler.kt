@@ -11,6 +11,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import kotlin.system.measureTimeMillis
 
 class APIHandler {
 
@@ -29,22 +30,29 @@ class APIHandler {
             .build()
             .create(MutualFundPriceService::class.java)
 
-        service.getMutualFundPrice(rdCode).enqueue(object : Callback<MutualFundPriceResponseModel> {
-            override fun onFailure(call: Call<MutualFundPriceResponseModel>, t: Throwable) {
-                Log.d("TAG_", "An error happened!")
-                t.printStackTrace()
-            }
-            override fun onResponse(call: Call<MutualFundPriceResponseModel>,
-                                    response: Response<MutualFundPriceResponseModel>) {
-                for (i in response.body()!!.pastPrices.indices){
-                    viewModel.fundPriceList.add(response.body()!!.pastPrices[i])
+        val timeInMillis = measureTimeMillis {
+            //Start Measuring Time
+            service.getMutualFundPrice(rdCode).enqueue(object : Callback<MutualFundPriceResponseModel> {
+                override fun onFailure(call: Call<MutualFundPriceResponseModel>, t: Throwable) {
+                    Log.d("TAG_", "An error happened!")
+                    t.printStackTrace()
                 }
-                for (i in response.body()!!.predictionPrices.indices){
-                    viewModel.predictionList.add(response.body()!!.predictionPrices[i])
+                override fun onResponse(call: Call<MutualFundPriceResponseModel>,
+                                        response: Response<MutualFundPriceResponseModel>) {
+                    for (i in response.body()!!.pastPrices.indices){
+                        viewModel.fundPriceList.add(response.body()!!.pastPrices[i])
+                    }
+                    for (i in response.body()!!.predictionPrices.indices){
+                        viewModel.predictionList.add(response.body()!!.predictionPrices[i])
+                    }
+                    viewModel.setChartData(chart)
                 }
-                viewModel.setChartData(chart)
-            }
-        })
+            })
+            //Stop Measuring Time
+        }
+
+        Log.d("TIME_","(The operation took $timeInMillis ms)")
+
     }
 
 }
