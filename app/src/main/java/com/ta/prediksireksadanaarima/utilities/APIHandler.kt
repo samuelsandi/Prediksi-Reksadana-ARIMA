@@ -10,6 +10,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import kotlin.system.measureTimeMillis
 
 class APIHandler {
 
@@ -28,23 +29,28 @@ class APIHandler {
             .build()
             .create(MutualFundPriceService::class.java)
 
-        service.getMutualFundPrice(rdCode).enqueue(object : Callback<MutualFundPriceResponse> {
-            override fun onFailure(call: Call<MutualFundPriceResponse>, t: Throwable) {
-                Log.d("TAG_", "An error happened!")
-                t.printStackTrace()
-            }
-            override fun onResponse(call: Call<MutualFundPriceResponse>,
-                                    response: Response<MutualFundPriceResponse>) {
-                /* This will print the response of the network call to the Logcat */
-                for (i in response.body()!!.pastPrices.indices){
-                    chartActivity.fundPriceList.add(response.body()!!.pastPrices[i])
+        val timeInMillis = measureTimeMillis {
+            //Start Measuring Time
+            service.getMutualFundPrice(rdCode).enqueue(object : Callback<MutualFundPriceResponse> {
+                override fun onFailure(call: Call<MutualFundPriceResponse>, t: Throwable) {
+                    Log.d("TAG_", "An error happened!")
+                    t.printStackTrace()
                 }
-                for (i in response.body()!!.predictionPrices.indices){
-                    chartActivity.predictionList.add(response.body()!!.predictionPrices[i])
+                override fun onResponse(call: Call<MutualFundPriceResponse>,
+                                        response: Response<MutualFundPriceResponse>) {
+                    for (i in response.body()!!.pastPrices.indices){
+                        chartActivity.fundPriceList.add(response.body()!!.pastPrices[i])
+                    }
+                    for (i in response.body()!!.predictionPrices.indices){
+                        chartActivity.predictionList.add(response.body()!!.predictionPrices[i])
+                    }
+                    chartActivity.setChartData()
                 }
-                chartActivity.setChartData()
-            }
-        })
+            })
+            //Stop Measuring Time
+        }
+
+        Log.d("TIME_","(The operation took $timeInMillis ms)")
     }
 
 }

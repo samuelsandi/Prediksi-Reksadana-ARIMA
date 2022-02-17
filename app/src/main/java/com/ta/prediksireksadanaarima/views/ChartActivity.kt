@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ta.prediksireksadanaarima.PriceEntry
 import com.ta.prediksireksadanaarima.utilities.APIHandler
 import com.ta.prediksireksadanaarima.R
+import kotlin.system.measureTimeMillis
 
 class ChartActivity : OnChartValueSelectedListener, AppCompatActivity() {
     private lateinit var chart: LineChart
@@ -33,33 +34,40 @@ class ChartActivity : OnChartValueSelectedListener, AppCompatActivity() {
     private var tfLight: Typeface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        tfRegular = Typeface.createFromAsset(assets, "OpenSans-Regular.ttf")
-        tfLight = Typeface.createFromAsset(assets, "OpenSans-Light.ttf")
+        val timeInMillis = measureTimeMillis {
+            //Start Measuring Time
+            super.onCreate(savedInstanceState)
+            tfRegular = Typeface.createFromAsset(assets, "OpenSans-Regular.ttf")
+            tfLight = Typeface.createFromAsset(assets, "OpenSans-Light.ttf")
 
-        @Suppress("DEPRECATION")
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
-        setContentView(R.layout.activity_multi_line_chart)
+            @Suppress("DEPRECATION")
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+            setContentView(R.layout.activity_multi_line_chart)
 
-        val intent = intent
-        val rdCode = intent.getStringExtra("rdCode")
-        val rdName = intent.getStringExtra("rdName")
+            val intent = intent
+            val rdCode = intent.getStringExtra("rdCode")
+            val rdName = intent.getStringExtra("rdName")
 
-        //actionbar
-        val actionbar = supportActionBar
-        //set actionbar title
-        actionbar!!.title = rdName
-        //set back button
-        actionbar.setDisplayHomeAsUpEnabled(true)
+            //actionbar
+            val actionbar = supportActionBar
+            //set actionbar title
+            actionbar!!.title = rdName
+            //set back button
+            actionbar.setDisplayHomeAsUpEnabled(true)
 
-        chart = findViewById(R.id.chart1)
+            chart = findViewById(R.id.chart1)
 
-        val handler = APIHandler()
-        handler.getPriceList(rdCode, this)
-        initChart()
+            val handler = APIHandler()
+            handler.getPriceList(rdCode, this)
+            initChart()
+            //Stop Measuring Time
+        }
+
+        Log.d("MVVM-TIME_","(The operation took $timeInMillis ms)")
+
     }
 
     inner class MyAxisFormatter : IndexAxisValueFormatter() {
