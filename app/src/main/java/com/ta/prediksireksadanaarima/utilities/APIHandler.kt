@@ -16,6 +16,7 @@ import kotlin.system.measureTimeMillis
 class APIHandler {
 
     fun getPriceList(rdCode: String?,
+                     days: Int?,
                      viewModel: ChartViewModel,
                      chart: LineChart) {
 
@@ -32,7 +33,7 @@ class APIHandler {
 
         val timeInMillis = measureTimeMillis {
             //Start Measuring Time
-            service.getMutualFundPrice(rdCode).enqueue(object : Callback<MutualFundPriceResponseModel> {
+            service.getMutualFundPrice(rdCode, days).enqueue(object : Callback<MutualFundPriceResponseModel> {
                 override fun onFailure(call: Call<MutualFundPriceResponseModel>, t: Throwable) {
                     Log.d("TAG_", "An error happened!")
                     t.printStackTrace()

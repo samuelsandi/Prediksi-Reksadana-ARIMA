@@ -1,10 +1,12 @@
 package com.ta.prediksireksadanaarima.views
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.NumberPicker
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.ta.prediksireksadanaarima.R
 import com.ta.prediksireksadanaarima.utilities.RDProductList
 import com.ta.prediksireksadanaarima.viewModels.MainViewModel
@@ -26,10 +28,26 @@ class MainActivity : AppCompatActivity() {
         listView.adapter = adapter
 
         listView.setOnItemClickListener { _, _, position, _ ->
-            val intent = Intent(this@MainActivity, ChartActivity::class.java)
-            intent.putExtra("rdCode", RDProductList.getList()[position].code)
-            intent.putExtra("rdName", RDProductList.getList()[position].name)
-            startActivity(intent)
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder.setTitle("Pilih jumlah hari prediksi")
+
+            val picker = NumberPicker(this)
+            picker.maxValue = 50
+            picker.minValue = 1
+            picker.wrapSelectorWheel = false
+            builder.setView(picker)
+
+            builder.setPositiveButton("Lanjut") { _, _ ->
+                val intent = Intent(this@MainActivity, ChartActivity::class.java)
+                intent.putExtra("rdCode", RDProductList.getList()[position].code)
+                intent.putExtra("rdName", RDProductList.getList()[position].name)
+                intent.putExtra("days", picker.value)
+                startActivity(intent)
+            }
+            builder.setNegativeButton("Batal") { dialog, _ ->
+                    dialog.cancel()
+            }
+            builder.show()
         }
     }
 }

@@ -11,7 +11,9 @@ import retrofit2.http.Query
 
 interface MutualFundPriceService {
     @GET("/api?")
-    fun getMutualFundPrice(@Query("rd") rdCode: String?): Call<MutualFundPriceResponseModel>
+    fun getMutualFundPrice(@Query("rd") rdCode: String?,
+                            @Query("days") days: Int?
+                           ): Call<MutualFundPriceResponseModel>
 
     companion object{
         const val API_BASE_URL = "https://arima-reksadana-api.vercel.app"

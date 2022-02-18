@@ -38,6 +38,7 @@ class ChartActivity: OnChartValueSelectedListener, AppCompatActivity() {
         val intent = intent
         val rdCode = intent.getStringExtra("rdCode")
         val rdName = intent.getStringExtra("rdName")
+        val days = intent.getIntExtra("days", 5)
 
         //actionbar
         val actionbar = supportActionBar
@@ -49,7 +50,7 @@ class ChartActivity: OnChartValueSelectedListener, AppCompatActivity() {
         chart = findViewById(R.id.chart1)
 
         val handler = APIHandler()
-        handler.getPriceList(rdCode, viewModel, chart)
+        handler.getPriceList(rdCode, days, viewModel, chart)
         chart.setOnChartValueSelectedListener(this)
         viewModel.initChart(chart)
     }
